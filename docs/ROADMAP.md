@@ -30,4 +30,5 @@
 
 - Ajustes responsivos.
 - Revisao de textos e estados vazios.
+- Preparacao para uso via GitHub Pages.
 - Pequenas melhorias de usabilidade.

@@ -39,6 +39,12 @@ body {
   margin-bottom: 28px;
 }
 
+.storage-note {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
 .eyebrow,
 .card-kicker,
 .date-label {
@@ -265,7 +271,7 @@ button:hover {
 @media (max-width: 720px) {
   .app-shell {
     width: min(100% - 24px, 1120px);
-    padding: 28px 0;
+    padding: 24px 0;
   }
 
   .topbar {
@@ -288,7 +294,13 @@ button:hover {
 
   .card {
     min-height: 210px;
-    padding: 18px;
+    padding: 16px;
+  }
+
+  .daily-form,
+  .activity-form,
+  .weekly-summary {
+    margin-top: 18px;
   }
 }
 

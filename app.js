@@ -302,8 +302,8 @@ function renderWeeklySummary() {
   weeklyGym.textContent = gymCount;
   weeklyRunKm.textContent = runKm ? `${runKm.toFixed(1)} km` : "0";
   weeklyBikeKm.textContent = bikeKm ? `${bikeKm.toFixed(1)} km` : "0";
-  weeklySleep.textContent = sleepAverage ? `${sleepAverage.toFixed(1)} h` : "—";
-  weeklyWeight.textContent = weightAverage ? `${weightAverage.toFixed(1)} kg` : "—";
+  weeklySleep.textContent = sleepAverage ? `${sleepAverage.toFixed(1)} h` : "\u2014";
+  weeklyWeight.textContent = weightAverage ? `${weightAverage.toFixed(1)} kg` : "\u2014";
 }
 
 setupDailyForm();

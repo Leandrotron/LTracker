@@ -2,6 +2,10 @@
 
 ## 2026-05-20
 
+- Preparado o projeto para uso via GitHub Pages mantendo dados apenas no localStorage do dispositivo.
+- Atualizado README com orientacoes de uso local, GitHub Pages e limite de sincronizacao.
+- Adicionada observacao discreta no app sobre armazenamento apenas neste dispositivo.
+- Revisados pequenos espacamentos para uso mobile.
 - Transformado o card "Resumo semanal" em metricas funcionais.
 - Adicionado calculo da semana atual com base na data local, de segunda a domingo.
 - Adicionados totais semanais de corridas, academia, km de corrida, km de bike, media de sono e peso medio.
