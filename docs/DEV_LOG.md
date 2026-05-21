@@ -1,5 +1,12 @@
 # DEV_LOG
 
+## 2026-05-21
+
+- Adicionado campo "Status do dia" ao registro diario com valores ativo, descanso planejado, recuperacao e doente.
+- Adicionada nota opcional do status no registro diario.
+- Status do dia passa a ser salvo em `dayStatus` e `statusNote` no objeto do dia atual.
+- Resumo semanal passa a exibir dias ativos e dias de descanso/recuperacao/doente de forma neutra.
+
 ## 2026-05-20
 
 - Preparado o projeto para uso via GitHub Pages mantendo dados apenas no localStorage do dispositivo.

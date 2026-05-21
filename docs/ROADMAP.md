@@ -9,6 +9,7 @@
 ## Milestone 2: Registro diario
 
 - Campos simples para sono, energia e recuperacao.
+- Status neutro do dia para ativo, descanso planejado, recuperacao ou doente.
 - Salvamento em localStorage.
 - Edicao do registro do dia atual.
 

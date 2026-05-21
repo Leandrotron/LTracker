@@ -2,10 +2,13 @@ const STORAGE_KEY = "ltracker.data";
 const dailyForm = document.querySelector("#daily-form");
 const activityForm = document.querySelector("#activity-form");
 const activityList = document.querySelector("#activity-list");
+const currentDate = document.querySelector("#current-date");
 const distanceField = document.querySelector(".distance-field");
 const gymFields = document.querySelectorAll(".gym-field");
 const weeklyRuns = document.querySelector("#weekly-runs");
 const weeklyGym = document.querySelector("#weekly-gym");
+const weeklyActiveDays = document.querySelector("#weekly-active-days");
+const weeklyRestDays = document.querySelector("#weekly-rest-days");
 const weeklyRunKm = document.querySelector("#weekly-run-km");
 const weeklyBikeKm = document.querySelector("#weekly-bike-km");
 const weeklySleep = document.querySelector("#weekly-sleep");
@@ -23,6 +26,21 @@ function formatDateKey(date) {
   const day = String(date.getDate()).padStart(2, "0");
 
   return `${year}-${month}-${day}`;
+}
+
+function formatDisplayDate(date) {
+  const formattedDate = new Intl.DateTimeFormat("pt-BR", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(date);
+
+  return formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
+}
+
+function renderCurrentDate() {
+  currentDate.textContent = formatDisplayDate(new Date());
 }
 
 function getCurrentWeekKeys() {
@@ -90,6 +108,8 @@ function getTodayData(data) {
 
   if (!data.days[todayKey]) {
     data.days[todayKey] = {
+      dayStatus: "active",
+      statusNote: "",
       weight: "",
       sleepHours: "",
       sleepQuality: "",
@@ -108,6 +128,8 @@ function getTodayData(data) {
 }
 
 function fillDailyForm(dayData) {
+  dailyForm.dayStatus.value = dayData.dayStatus || "active";
+  dailyForm.statusNote.value = dayData.statusNote || "";
   dailyForm.weight.value = dayData.weight || "";
   dailyForm.sleepHours.value = dayData.sleepHours || "";
   dailyForm.sleepQuality.value = dayData.sleepQuality || "";
@@ -130,6 +152,8 @@ function setupDailyForm() {
     const currentDay = getTodayData(currentData);
 
     currentData.days[todayKey] = {
+      dayStatus: dailyForm.dayStatus.value || "active",
+      statusNote: dailyForm.statusNote.value,
       weight: dailyForm.weight.value,
       sleepHours: dailyForm.sleepHours.value,
       sleepQuality: dailyForm.sleepQuality.value,
@@ -256,6 +280,8 @@ function renderWeeklySummary() {
   const weightValues = [];
   let runCount = 0;
   let gymCount = 0;
+  let activeDays = 0;
+  let restDays = 0;
   let runKm = 0;
   let bikeKm = 0;
 
@@ -268,6 +294,13 @@ function renderWeeklySummary() {
 
     const sleepHours = getNumber(dayData.sleepHours);
     const weight = getNumber(dayData.weight);
+    const dayStatus = dayData.dayStatus || "active";
+
+    if (dayStatus === "active") {
+      activeDays += 1;
+    } else {
+      restDays += 1;
+    }
 
     if (sleepHours > 0) {
       sleepValues.push(sleepHours);
@@ -300,6 +333,8 @@ function renderWeeklySummary() {
 
   weeklyRuns.textContent = runCount;
   weeklyGym.textContent = gymCount;
+  weeklyActiveDays.textContent = activeDays;
+  weeklyRestDays.textContent = restDays;
   weeklyRunKm.textContent = runKm ? `${runKm.toFixed(1)} km` : "0";
   weeklyBikeKm.textContent = bikeKm ? `${bikeKm.toFixed(1)} km` : "0";
   weeklySleep.textContent = sleepAverage ? `${sleepAverage.toFixed(1)} h` : "\u2014";
@@ -308,4 +343,5 @@ function renderWeeklySummary() {
 
 setupDailyForm();
 setupActivityForm();
+renderCurrentDate();
 renderWeeklySummary();

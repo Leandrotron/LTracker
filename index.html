@@ -12,6 +12,7 @@
         <div>
           <p class="eyebrow">LTracker</p>
           <h1>Hoje</h1>
+          <p class="current-date" id="current-date"></p>
           <p class="storage-note">Dados salvos apenas neste dispositivo.</p>
         </div>
         <p class="date-label">Painel pessoal</p>
@@ -25,6 +26,21 @@
           </div>
           <form class="daily-form" id="daily-form">
             <div class="form-grid">
+              <label>
+                Status do dia
+                <select id="dayStatus" name="dayStatus">
+                  <option value="active">Ativo</option>
+                  <option value="planned_rest">Descanso planejado</option>
+                  <option value="recovery">Recuperacao</option>
+                  <option value="sick">Doente</option>
+                </select>
+              </label>
+
+              <label>
+                Nota do status
+                <input id="statusNote" name="statusNote" type="text" placeholder="Ex: perna cansada" />
+              </label>
+
               <label>
                 Peso
                 <input id="weight" name="weight" type="number" step="0.1" inputmode="decimal" placeholder="kg" />
@@ -152,6 +168,16 @@
             <div class="metric">
               <span class="metric-label">Academia</span>
               <strong id="weekly-gym">0</strong>
+            </div>
+
+            <div class="metric">
+              <span class="metric-label">Dias ativos</span>
+              <strong id="weekly-active-days">0</strong>
+            </div>
+
+            <div class="metric">
+              <span class="metric-label">Descanso/recuperacao/doente</span>
+              <strong id="weekly-rest-days">0</strong>
             </div>
 
             <div class="metric">
