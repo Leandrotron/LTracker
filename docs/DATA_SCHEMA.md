@@ -31,6 +31,13 @@ ltracker.data
           "notes": ""
         },
         {
+          "type": "Caminhada",
+          "duration": "",
+          "intensity": "",
+          "distance": "",
+          "notes": ""
+        },
+        {
           "type": "Academia",
           "duration": "",
           "intensity": "",
@@ -52,7 +59,7 @@ ltracker.data
 - `dayStatus` guarda o status neutro do dia: `active`, `planned_rest`, `recovery` ou `sick`.
 - `statusNote` guarda uma nota opcional sobre o status do dia.
 - `activities` guarda as atividades registradas no dia atual.
-- Corrida e Bike usam `distance`.
+- Corrida, Bike e Caminhada usam `distance`.
 - Academia usa `workoutPlan` e `workoutFeeling`.
 - O resumo semanal usa apenas os dados ja existentes em `days`.
 - Dias sem `dayStatus` salvo sao lidos como `active` para manter compatibilidade com dados antigos.

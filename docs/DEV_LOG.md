@@ -1,5 +1,11 @@
 # DEV_LOG
 
+## 2026-05-22
+
+- Adicionado tipo de atividade Caminhada ao formulario.
+- Caminhada usa os mesmos campos de Corrida e Bike: distancia, duracao, intensidade percebida e observacoes.
+- Resumo semanal passa a exibir km totais de caminhada.
+
 ## 2026-05-21
 
 - Adicionado campo "Status do dia" ao registro diario com valores ativo, descanso planejado, recuperacao e doente.

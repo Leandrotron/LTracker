@@ -11,6 +11,7 @@ const weeklyActiveDays = document.querySelector("#weekly-active-days");
 const weeklyRestDays = document.querySelector("#weekly-rest-days");
 const weeklyRunKm = document.querySelector("#weekly-run-km");
 const weeklyBikeKm = document.querySelector("#weekly-bike-km");
+const weeklyWalkKm = document.querySelector("#weekly-walk-km");
 const weeklySleep = document.querySelector("#weekly-sleep");
 const weeklyWeight = document.querySelector("#weekly-weight");
 
@@ -284,6 +285,7 @@ function renderWeeklySummary() {
   let restDays = 0;
   let runKm = 0;
   let bikeKm = 0;
+  let walkKm = 0;
 
   weekKeys.forEach((dayKey) => {
     const dayData = data.days[dayKey];
@@ -322,6 +324,10 @@ function renderWeeklySummary() {
         bikeKm += getNumber(activity.distance);
       }
 
+      if (type === "caminhada") {
+        walkKm += getNumber(activity.distance);
+      }
+
       if (type === "academia") {
         gymCount += 1;
       }
@@ -337,6 +343,7 @@ function renderWeeklySummary() {
   weeklyRestDays.textContent = restDays;
   weeklyRunKm.textContent = runKm ? `${runKm.toFixed(1)} km` : "0";
   weeklyBikeKm.textContent = bikeKm ? `${bikeKm.toFixed(1)} km` : "0";
+  weeklyWalkKm.textContent = walkKm ? `${walkKm.toFixed(1)} km` : "0";
   weeklySleep.textContent = sleepAverage ? `${sleepAverage.toFixed(1)} h` : "\u2014";
   weeklyWeight.textContent = weightAverage ? `${weightAverage.toFixed(1)} kg` : "\u2014";
 }
