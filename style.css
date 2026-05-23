@@ -116,7 +116,8 @@ button {
 }
 
 .daily-form,
-.activity-form {
+.activity-form,
+.gym-form {
   display: grid;
   gap: 14px;
   margin-top: 22px;
@@ -226,6 +227,75 @@ button:hover {
   text-align: center;
 }
 
+.gym-workouts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.gym-workout {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+}
+
+.gym-workout h3 {
+  margin: 0;
+  color: var(--text);
+  font-size: 0.98rem;
+}
+
+.gym-exercise-list {
+  display: grid;
+  gap: 10px;
+}
+
+.gym-exercise-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: rgba(15, 17, 21, 0.42);
+}
+
+.gym-exercise-content {
+  min-width: 0;
+  display: grid;
+  flex: 1;
+  gap: 10px;
+}
+
+.gym-exercise-photo {
+  width: 72px;
+  height: 72px;
+  flex: 0 0 auto;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.gym-edit-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.gym-edit-form label {
+  font-size: 0.76rem;
+}
+
+.gym-edit-form input,
+.gym-edit-form button {
+  height: 38px;
+}
+
+.gym-edit-form button {
+  align-self: end;
+}
+
 .weekly-summary {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -308,8 +378,17 @@ button:hover {
 
   .daily-form,
   .activity-form,
+  .gym-form,
   .weekly-summary {
     margin-top: 18px;
+  }
+
+  .gym-workouts {
+    grid-template-columns: 1fr;
+  }
+
+  .gym-edit-form {
+    grid-template-columns: 1fr;
   }
 }
 

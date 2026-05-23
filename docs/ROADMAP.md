@@ -33,3 +33,13 @@
 - Revisao de textos e estados vazios.
 - Preparacao para uso via GitHub Pages.
 - Pequenas melhorias de usabilidade.
+
+## Milestone 6: Academia interna
+
+- Secao "Academia" dentro do LTracker existente.
+- Ficha simples de treino com exercicios por Treino A e Treino B.
+- Ficha inicial baseada no treino real do usuario, sem sobrescrever exercicios ja cadastrados.
+- Campos iniciais para ordem, carga atual, series, repeticoes, observacao e foto opcional.
+- Edicao leve de carga, observacao e foto opcional direto na ficha.
+- Persistencia da ficha no mesmo localStorage do app.
+- Sem progressao avancada, calendario, graficos ou drag and drop nesta etapa.

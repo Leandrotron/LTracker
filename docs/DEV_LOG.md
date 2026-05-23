@@ -1,5 +1,25 @@
 # DEV_LOG
 
+## 2026-05-23
+
+- Ficha de academia inicial passa a usar a ficha real do usuario: Treino A de superiores e Treino B de inferiores.
+- A ficha inicial e inserida apenas quando ainda nao existem exercicios cadastrados, sem sobrescrever dados locais.
+- Exercicios da ficha permitem ajuste posterior de carga, observacao e foto opcional direto na lista.
+- Adicionada secao interna "Academia" ao app existente.
+- Criada ficha de treino com cadastro simples de exercicios por Treino A ou B.
+- Exercicios da ficha guardam ordem, nome, carga, series, repeticoes, observacao e foto opcional em data URL.
+- Ficha de academia passa a ser salva em `gym.exercises` dentro da mesma chave `ltracker.data`.
+- Exibicao da ficha agrupa exercicios por Treino A e Treino B, com miniatura apenas quando houver foto.
+- Ajustados os campos de duracao e distancia das atividades para aceitar decimais livres com ponto ou virgula.
+- Duracao de atividade passa a aceitar tambem `min:seg`, salvando em `duration` como minutos decimais normalizados.
+- Lista de atividades passa a exibir duracao e distancia em formatos mais amigaveis, sem casas decimais desnecessarias.
+- Totais semanais de km passam a preservar melhor distancias decimais.
+- Ajustados os campos de peso e sono para aceitar entrada decimal com ponto ou virgula.
+- Sono passa a aceitar tambem o formato `h:min`, salvando em `sleepHours` como decimal normalizado para manter compatibilidade.
+- Resumo semanal passa a calcular sono com decimal, virgula ou `h:min` e exibir media em formato amigavel, como `7h02`.
+- Peso medio semanal passa a considerar decimais com duas casas.
+- Sensacao do treino passa a usar campo controlado em escala simples.
+
 ## 2026-05-22
 
 - Adicionado tipo de atividade Caminhada ao formulario.

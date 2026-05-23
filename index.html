@@ -43,12 +43,12 @@
 
               <label>
                 Peso
-                <input id="weight" name="weight" type="number" step="0.1" inputmode="decimal" placeholder="kg" />
+                <input id="weight" name="weight" type="text" inputmode="decimal" placeholder="kg" />
               </label>
 
               <label>
                 Horas de sono
-                <input id="sleepHours" name="sleepHours" type="number" step="0.5" inputmode="decimal" placeholder="h" />
+                <input id="sleepHours" name="sleepHours" type="text" inputmode="decimal" placeholder="h ou h:min" />
               </label>
 
               <label>
@@ -109,7 +109,7 @@
 
               <label>
                 Duracao
-                <input id="activityDuration" name="activityDuration" type="number" min="0" step="5" inputmode="numeric" placeholder="min" />
+                <input id="activityDuration" name="activityDuration" type="text" inputmode="decimal" placeholder="min ou min:seg" />
               </label>
 
               <label>
@@ -126,7 +126,7 @@
 
               <label class="distance-field">
                 Distancia
-                <input id="activityDistance" name="activityDistance" type="number" min="0" step="0.1" inputmode="decimal" placeholder="km" />
+                <input id="activityDistance" name="activityDistance" type="text" inputmode="decimal" placeholder="km" />
               </label>
 
               <label class="gym-field">
@@ -140,7 +140,14 @@
 
               <label class="gym-field">
                 Sensacao
-                <input id="workoutFeeling" name="workoutFeeling" type="text" placeholder="Ex: forte, leve" />
+                <select id="workoutFeeling" name="workoutFeeling">
+                  <option value="">1-5</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
               </label>
             </div>
 
@@ -153,6 +160,73 @@
           </form>
 
           <div class="activity-list" id="activity-list" aria-live="polite"></div>
+        </article>
+
+        <article class="card card-wide">
+          <div class="card-header">
+            <p class="card-kicker">Ficha de treino</p>
+            <h2>Academia</h2>
+          </div>
+          <form class="gym-form" id="gym-form">
+            <div class="form-grid">
+              <label>
+                Exercicio
+                <input id="gymExerciseName" name="gymExerciseName" type="text" placeholder="Ex: Leg press" />
+              </label>
+
+              <label>
+                Treino
+                <select id="gymWorkout" name="gymWorkout">
+                  <option value="A">A</option>
+                  <option value="B">B</option>
+                </select>
+              </label>
+
+              <label>
+                Ordem
+                <input id="gymOrder" name="gymOrder" type="number" min="1" step="1" inputmode="numeric" placeholder="1" />
+              </label>
+
+              <label>
+                Carga atual
+                <input id="gymLoad" name="gymLoad" type="text" placeholder="Ex: 40kg" />
+              </label>
+
+              <label>
+                Series
+                <input id="gymSets" name="gymSets" type="text" inputmode="numeric" placeholder="3" />
+              </label>
+
+              <label>
+                Repeticoes
+                <input id="gymReps" name="gymReps" type="text" inputmode="numeric" placeholder="12" />
+              </label>
+            </div>
+
+            <label>
+              Observacao
+              <textarea id="gymNote" name="gymNote" rows="3" placeholder="Ajustes, banco, amplitude"></textarea>
+            </label>
+
+            <label>
+              Foto opcional
+              <input id="gymPhoto" name="gymPhoto" type="file" accept="image/*" />
+            </label>
+
+            <button type="submit">Adicionar exercicio</button>
+          </form>
+
+          <div class="gym-workouts" id="gym-workouts" aria-live="polite">
+            <section class="gym-workout">
+              <h3>Treino A</h3>
+              <div class="gym-exercise-list" id="gym-workout-a"></div>
+            </section>
+
+            <section class="gym-workout">
+              <h3>Treino B</h3>
+              <div class="gym-exercise-list" id="gym-workout-b"></div>
+            </section>
+          </div>
         </article>
 
         <article class="card card-wide">
