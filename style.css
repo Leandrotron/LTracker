@@ -123,6 +123,24 @@ button {
   margin-top: 22px;
 }
 
+.section-title,
+.form-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.section-title {
+  margin-top: 22px;
+  color: var(--text);
+  font-weight: 800;
+}
+
+.section-title + .activity-form {
+  margin-top: 12px;
+}
+
 .form-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -228,6 +246,67 @@ button:hover {
   color: var(--text);
   font-size: 0.96rem;
   font-weight: 800;
+}
+
+.muscle-badge {
+  flex: 0 0 auto;
+  padding: 4px 8px;
+  border: 1px solid rgba(244, 246, 248, 0.16);
+  border-radius: 999px;
+  background: rgba(244, 246, 248, 0.08);
+  color: var(--text);
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+.muscle-shoulder {
+  background: rgba(142, 224, 197, 0.12);
+  border-color: rgba(142, 224, 197, 0.28);
+}
+
+.muscle-chest {
+  background: rgba(240, 151, 135, 0.12);
+  border-color: rgba(240, 151, 135, 0.28);
+}
+
+.muscle-back {
+  background: rgba(125, 181, 245, 0.12);
+  border-color: rgba(125, 181, 245, 0.28);
+}
+
+.muscle-biceps {
+  background: rgba(212, 174, 255, 0.12);
+  border-color: rgba(212, 174, 255, 0.28);
+}
+
+.muscle-triceps {
+  background: rgba(255, 206, 116, 0.12);
+  border-color: rgba(255, 206, 116, 0.28);
+}
+
+.muscle-quads {
+  background: rgba(154, 214, 132, 0.12);
+  border-color: rgba(154, 214, 132, 0.28);
+}
+
+.muscle-hamstrings {
+  background: rgba(255, 159, 196, 0.12);
+  border-color: rgba(255, 159, 196, 0.28);
+}
+
+.muscle-legs {
+  background: rgba(164, 197, 255, 0.12);
+  border-color: rgba(164, 197, 255, 0.28);
+}
+
+.muscle-glutes {
+  background: rgba(255, 177, 109, 0.12);
+  border-color: rgba(255, 177, 109, 0.28);
+}
+
+.muscle-calves {
+  background: rgba(189, 232, 139, 0.12);
+  border-color: rgba(189, 232, 139, 0.28);
 }
 
 .activity-meta,

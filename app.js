@@ -24,6 +24,27 @@ const weeklyWeight = document.querySelector("#weekly-weight");
 let isWorkoutCardOpen = false;
 let isTemplateEditMode = false;
 const openExercisePhotos = new Set();
+const EXERCISE_NAME_ALIASES = {
+  "Elevacao lateral": "Elevação lateral",
+  "Elevacao frontal": "Elevação frontal",
+};
+const MUSCLE_GROUPS = {
+  "Elevação lateral": "Ombro",
+  "Elevação frontal": "Ombro",
+  "Supino inclinado": "Peito",
+  "Crucifixo maquina": "Peito",
+  Pulley: "Costas",
+  "Remada alta": "Ombro",
+  "Rosca direta": "Bíceps",
+  "Triceps corda": "Tríceps",
+  "Extensora unilateral": "Quadríceps",
+  "Leg 45": "Pernas",
+  "Flexora vertical": "Posterior",
+  "Mesa flexora": "Posterior",
+  "Hack squat": "Pernas",
+  Abdutora: "Glúteos",
+  Panturrilha: "Panturrilha",
+};
 const DEFAULT_WORKOUT_TEMPLATES = {
   A: {
     title: "Treino A - Superiores",
@@ -31,14 +52,14 @@ const DEFAULT_WORKOUT_TEMPLATES = {
       {
         title: "Superiores",
         exercises: [
-          createTemplateExercise("Supino inclinado"),
-          createTemplateExercise("Crucifixo maquina"),
-          createTemplateExercise("Pulley"),
-          createTemplateExercise("Remada alta"),
-          createTemplateExercise("Elevacao lateral"),
-          createTemplateExercise("Elevacao frontal"),
-          createTemplateExercise("Rosca direta"),
-          createTemplateExercise("Triceps corda"),
+          createTemplateExercise("Elevação lateral", "Ombro"),
+          createTemplateExercise("Elevação frontal", "Ombro"),
+          createTemplateExercise("Supino inclinado", "Peito"),
+          createTemplateExercise("Crucifixo maquina", "Peito"),
+          createTemplateExercise("Pulley", "Costas"),
+          createTemplateExercise("Remada alta", "Ombro"),
+          createTemplateExercise("Rosca direta", "Bíceps"),
+          createTemplateExercise("Triceps corda", "Tríceps"),
         ],
       },
     ],
@@ -49,13 +70,13 @@ const DEFAULT_WORKOUT_TEMPLATES = {
       {
         title: "Inferiores",
         exercises: [
-          createTemplateExercise("Extensora unilateral"),
-          createTemplateExercise("Leg 45"),
-          createTemplateExercise("Flexora vertical"),
-          createTemplateExercise("Hack squat"),
-          createTemplateExercise("Panturrilha"),
-          createTemplateExercise("Abdutora"),
-          createTemplateExercise("Mesa flexora"),
+          createTemplateExercise("Extensora unilateral", "Quadríceps"),
+          createTemplateExercise("Leg 45", "Pernas"),
+          createTemplateExercise("Flexora vertical", "Posterior"),
+          createTemplateExercise("Mesa flexora", "Posterior"),
+          createTemplateExercise("Hack squat", "Pernas"),
+          createTemplateExercise("Abdutora", "Glúteos"),
+          createTemplateExercise("Panturrilha", "Panturrilha"),
         ],
       },
     ],
@@ -135,9 +156,37 @@ function saveData(data) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 }
 
-function createTemplateExercise(name) {
+function getCanonicalExerciseName(name) {
+  return EXERCISE_NAME_ALIASES[name] || name;
+}
+
+function getDefaultMuscleGroup(name) {
+  return MUSCLE_GROUPS[getCanonicalExerciseName(name)] || "";
+}
+
+function getMuscleGroupClass(muscleGroup) {
+  const classes = {
+    Ombro: "muscle-shoulder",
+    Peito: "muscle-chest",
+    Costas: "muscle-back",
+    Bíceps: "muscle-biceps",
+    Tríceps: "muscle-triceps",
+    Quadríceps: "muscle-quads",
+    Posterior: "muscle-hamstrings",
+    Pernas: "muscle-legs",
+    Glúteos: "muscle-glutes",
+    Panturrilha: "muscle-calves",
+  };
+
+  return classes[muscleGroup] || "";
+}
+
+function createTemplateExercise(name, muscleGroup = "") {
+  const canonicalName = getCanonicalExerciseName(name);
+
   return {
-    name,
+    name: canonicalName,
+    muscleGroup: muscleGroup || getDefaultMuscleGroup(canonicalName),
     weight: "",
     notes: "",
     photo: "",
@@ -149,8 +198,11 @@ function normalizeTemplateExercise(exercise) {
     return createTemplateExercise(exercise);
   }
 
+  const name = getCanonicalExerciseName(exercise?.name || "Exercicio");
+
   return {
-    name: exercise?.name || "Exercicio",
+    name,
+    muscleGroup: exercise?.muscleGroup || getDefaultMuscleGroup(name),
     weight: exercise?.weight || exercise?.load || "",
     notes: exercise?.notes || exercise?.note || "",
     photo: exercise?.photo || exercise?.photoDataUrl || "",
@@ -423,6 +475,7 @@ function setupDailyForm() {
     const currentDay = getTodayData(currentData);
 
     currentData.days[todayKey] = {
+      ...currentDay,
       dayStatus: dailyForm.dayStatus.value || "active",
       statusNote: dailyForm.statusNote.value,
       weight: normalizeDecimalInput(dailyForm.weight.value),
@@ -589,7 +642,20 @@ function renderGymExerciseList(container, exercises, workout) {
     item.className = "gym-exercise-item";
     content.className = "gym-exercise-content";
     title.className = "activity-title";
-    title.textContent = `${exercise.index + 1} - ${exercise.name}`;
+
+    const exerciseName = document.createElement("span");
+
+    exerciseName.textContent = `${exercise.index + 1} - ${exercise.name}`;
+    title.appendChild(exerciseName);
+
+    if (exercise.muscleGroup) {
+      const badge = document.createElement("span");
+      const muscleGroupClass = getMuscleGroupClass(exercise.muscleGroup);
+
+      badge.className = `muscle-badge ${muscleGroupClass}`.trim();
+      badge.textContent = exercise.muscleGroup;
+      title.appendChild(badge);
+    }
 
     content.appendChild(title);
 
