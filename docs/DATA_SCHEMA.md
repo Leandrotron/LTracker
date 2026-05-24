@@ -48,20 +48,39 @@ ltracker.data
       ]
     }
   },
-  "gym": {
-    "exercises": [
-      {
-        "id": "gym-a-001",
-        "workout": "A",
-        "order": 1,
-        "name": "Supino inclinado",
-        "load": "",
-        "sets": "4",
-        "reps": "8-10",
-        "note": "",
-        "photoDataUrl": ""
-      }
-    ]
+  "workoutTemplates": {
+    "A": {
+      "title": "Treino A - Superiores",
+      "groups": [
+        {
+          "title": "Superiores",
+          "exercises": [
+            {
+              "name": "Supino inclinado",
+              "weight": "",
+              "notes": "",
+              "photo": ""
+            }
+          ]
+        }
+      ]
+    },
+    "B": {
+      "title": "Treino B - Inferiores",
+      "groups": [
+        {
+          "title": "Inferiores",
+          "exercises": [
+            {
+              "name": "Extensora unilateral",
+              "weight": "",
+              "notes": "",
+              "photo": ""
+            }
+          ]
+        }
+      ]
+    }
   }
 }
 ```
@@ -80,12 +99,15 @@ ltracker.data
 - `duration` guarda minutos em decimal normalizado quando informado. Exemplo: `32:30` vira `32.5`.
 - Corrida, Bike e Caminhada usam `distance`, tambem normalizado com ponto decimal quando informado.
 - Academia usa `workoutPlan` e `workoutFeeling`.
-- `gym.exercises` guarda a ficha interna de academia dentro da mesma chave `ltracker.data`.
-- Cada exercicio da ficha usa `workout` para agrupar em Treino A ou Treino B.
-- Quando `gym.exercises` ainda estiver vazio, o app insere a ficha inicial do usuario com Treino A de superiores e Treino B de inferiores.
-- A ficha inicial nao sobrescreve exercicios ja cadastrados.
-- Na lista da ficha, a edicao simples atualiza apenas `load`, `note` e `photoDataUrl`.
-- `photoDataUrl` guarda uma foto opcional do aparelho/exercicio como data URL. Quando nao houver foto, fica vazio.
+- `workoutTemplates` guarda os templates locais dos treinos A e B.
+- Cada template possui `title` e `groups`; nesta etapa, o app usa um grupo simples por treino.
+- A lista `groups[].exercises` guarda objetos de exercicio na ordem de execucao.
+- Cada exercicio de template usa `name`, `weight`, `notes` e `photo`.
+- `photo` guarda uma foto opcional do equipamento como data URL. Quando nao houver foto, fica vazio.
+- Dados antigos em que `groups[].exercises` continha apenas strings sao convertidos automaticamente para objetos.
+- Quando `workoutTemplates` ainda nao existir, o app usa os templates padrao atuais.
+- Se houver dados antigos em `gym.exercises`, o app tenta migrar os nomes e a ordem para `workoutTemplates`.
+- O modo editar ficha permite adicionar, remover, reorganizar e editar detalhes opcionais dos exercicios.
 - O resumo semanal usa apenas os dados ja existentes em `days`.
 - Dias sem `dayStatus` salvo sao lidos como `active` para manter compatibilidade com dados antigos.
 - O schema pode mudar conforme o MVP evoluir.

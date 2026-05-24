@@ -39,7 +39,8 @@
 - Secao "Academia" dentro do LTracker existente.
 - Ficha simples de treino com exercicios por Treino A e Treino B.
 - Ficha inicial baseada no treino real do usuario, sem sobrescrever exercicios ja cadastrados.
-- Campos iniciais para ordem, carga atual, series, repeticoes, observacao e foto opcional.
-- Edicao leve de carga, observacao e foto opcional direto na ficha.
+- Ficha recolhivel para manter a tela principal mais limpa.
+- Modo simples para adicionar, remover e reorganizar exercicios dos templates A/B.
+- Detalhes opcionais por exercicio: carga/peso, observacoes e foto do equipamento.
 - Persistencia da ficha no mesmo localStorage do app.
 - Sem progressao avancada, calendario, graficos ou drag and drop nesta etapa.

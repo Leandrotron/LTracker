@@ -2,6 +2,17 @@
 
 ## 2026-05-23
 
+- Exercicios dos templates A/B passam de string para objeto com `name`, `weight`, `notes` e `photo`.
+- Adicionada migracao automatica de exercicios antigos em string para o novo formato.
+- Modo normal da ficha volta a exibir carga, observacoes e botao de camera quando houver foto.
+- Modo editar ficha permite atualizar nome, carga, observacoes, foto e remover foto do exercicio.
+- Adicionado modo simples de edicao dos templates A/B da ficha de academia.
+- Templates A/B passam a ser persistidos em `workoutTemplates` dentro de `ltracker.data`.
+- Modo edicao permite subir, descer, remover e adicionar exercicios por treino.
+- Adicionada migracao simples de `gym.exercises` antigo para `workoutTemplates` quando necessario.
+- Ficha de treino da Academia passa a iniciar recolhida e aparecer apenas quando o tipo da atividade for Academia.
+- Adicionado controle "Ver ficha do treino" / "Ocultar ficha do treino" para abrir e fechar a ficha.
+- Ficha exibida passa a acompanhar o Treino A/B selecionado no registro da atividade.
 - Ficha de academia inicial passa a usar a ficha real do usuario: Treino A de superiores e Treino B de inferiores.
 - A ficha inicial e inserida apenas quando ainda nao existem exercicios cadastrados, sem sobrescrever dados locais.
 - Exercicios da ficha permitem ajuste posterior de carga, observacao e foto opcional direto na lista.

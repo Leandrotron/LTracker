@@ -117,7 +117,7 @@ button {
 
 .daily-form,
 .activity-form,
-.gym-form {
+.exercise-add-form {
   display: grid;
   gap: 14px;
   margin-top: 22px;
@@ -179,6 +179,25 @@ button {
 
 button:hover {
   filter: brightness(1.04);
+}
+
+.workout-toggle {
+  margin-top: 16px;
+  background: rgba(142, 224, 197, 0.12);
+  color: var(--accent);
+  border: 1px solid rgba(142, 224, 197, 0.32);
+}
+
+.secondary-button {
+  background: rgba(142, 224, 197, 0.12);
+  color: var(--accent);
+  border: 1px solid rgba(142, 224, 197, 0.32);
+}
+
+.template-actions {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 18px;
 }
 
 .is-hidden {
@@ -252,8 +271,9 @@ button:hover {
 }
 
 .gym-exercise-item {
-  display: flex;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
   gap: 12px;
   padding: 14px;
   border: 1px solid var(--border);
@@ -264,36 +284,54 @@ button:hover {
 .gym-exercise-content {
   min-width: 0;
   display: grid;
-  flex: 1;
   gap: 10px;
 }
 
-.gym-exercise-photo {
-  width: 72px;
-  height: 72px;
-  flex: 0 0 auto;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  object-fit: cover;
+.exercise-actions {
+  display: flex;
+  gap: 6px;
 }
 
-.gym-edit-form {
+.exercise-actions button,
+.photo-toggle {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  background: rgba(244, 246, 248, 0.08);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.exercise-actions button:hover,
+.photo-toggle:hover {
+  border-color: rgba(142, 224, 197, 0.56);
+}
+
+.template-exercise-form {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
 }
 
-.gym-edit-form label {
+.template-exercise-form label {
   font-size: 0.76rem;
 }
 
-.gym-edit-form input,
-.gym-edit-form button {
+.template-exercise-form textarea {
+  min-height: 70px;
+}
+
+.template-exercise-form button {
+  align-self: end;
   height: 38px;
 }
 
-.gym-edit-form button {
-  align-self: end;
+.gym-exercise-photo {
+  width: min(100%, 320px);
+  max-height: 220px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  object-fit: cover;
 }
 
 .weekly-summary {
@@ -378,7 +416,7 @@ button:hover {
 
   .daily-form,
   .activity-form,
-  .gym-form,
+  .exercise-add-form,
   .weekly-summary {
     margin-top: 18px;
   }
@@ -387,7 +425,15 @@ button:hover {
     grid-template-columns: 1fr;
   }
 
-  .gym-edit-form {
+  .gym-exercise-item {
+    grid-template-columns: 1fr;
+  }
+
+  .exercise-actions {
+    justify-content: flex-start;
+  }
+
+  .template-exercise-form {
     grid-template-columns: 1fr;
   }
 }

@@ -159,61 +159,28 @@
             <button type="submit">Adicionar atividade</button>
           </form>
 
+          <button class="workout-toggle is-hidden" id="workout-toggle" type="button">
+            Ver ficha do treino
+          </button>
+
           <div class="activity-list" id="activity-list" aria-live="polite"></div>
         </article>
 
-        <article class="card card-wide">
+        <article class="card card-wide gym-card is-hidden" id="gym-card">
           <div class="card-header">
             <p class="card-kicker">Ficha de treino</p>
-            <h2>Academia</h2>
+            <h2 id="gym-card-title">Treino A</h2>
           </div>
-          <form class="gym-form" id="gym-form">
-            <div class="form-grid">
-              <label>
-                Exercicio
-                <input id="gymExerciseName" name="gymExerciseName" type="text" placeholder="Ex: Leg press" />
-              </label>
+          <div class="template-actions">
+            <button class="secondary-button" id="template-edit-toggle" type="button">Modo editar ficha</button>
+          </div>
 
-              <label>
-                Treino
-                <select id="gymWorkout" name="gymWorkout">
-                  <option value="A">A</option>
-                  <option value="B">B</option>
-                </select>
-              </label>
-
-              <label>
-                Ordem
-                <input id="gymOrder" name="gymOrder" type="number" min="1" step="1" inputmode="numeric" placeholder="1" />
-              </label>
-
-              <label>
-                Carga atual
-                <input id="gymLoad" name="gymLoad" type="text" placeholder="Ex: 40kg" />
-              </label>
-
-              <label>
-                Series
-                <input id="gymSets" name="gymSets" type="text" inputmode="numeric" placeholder="3" />
-              </label>
-
-              <label>
-                Repeticoes
-                <input id="gymReps" name="gymReps" type="text" inputmode="numeric" placeholder="12" />
-              </label>
-            </div>
-
+          <form class="exercise-add-form is-hidden" id="exercise-add-form">
             <label>
-              Observacao
-              <textarea id="gymNote" name="gymNote" rows="3" placeholder="Ajustes, banco, amplitude"></textarea>
+              + Adicionar exercicio
+              <input id="newExerciseName" name="newExerciseName" type="text" placeholder="Nome do exercicio" />
             </label>
-
-            <label>
-              Foto opcional
-              <input id="gymPhoto" name="gymPhoto" type="file" accept="image/*" />
-            </label>
-
-            <button type="submit">Adicionar exercicio</button>
+            <button type="submit">Adicionar</button>
           </form>
 
           <div class="gym-workouts" id="gym-workouts" aria-live="polite">

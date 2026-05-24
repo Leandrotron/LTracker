@@ -1,8 +1,12 @@
 const STORAGE_KEY = "ltracker.data";
 const dailyForm = document.querySelector("#daily-form");
 const activityForm = document.querySelector("#activity-form");
-const gymForm = document.querySelector("#gym-form");
+const exerciseAddForm = document.querySelector("#exercise-add-form");
 const activityList = document.querySelector("#activity-list");
+const workoutToggle = document.querySelector("#workout-toggle");
+const gymCard = document.querySelector("#gym-card");
+const gymCardTitle = document.querySelector("#gym-card-title");
+const templateEditToggle = document.querySelector("#template-edit-toggle");
 const gymWorkoutA = document.querySelector("#gym-workout-a");
 const gymWorkoutB = document.querySelector("#gym-workout-b");
 const currentDate = document.querySelector("#current-date");
@@ -17,23 +21,46 @@ const weeklyBikeKm = document.querySelector("#weekly-bike-km");
 const weeklyWalkKm = document.querySelector("#weekly-walk-km");
 const weeklySleep = document.querySelector("#weekly-sleep");
 const weeklyWeight = document.querySelector("#weekly-weight");
-const INITIAL_GYM_EXERCISES = [
-  { id: "gym-a-001", workout: "A", order: 1, name: "Supino inclinado", load: "", sets: "4", reps: "8-10", note: "", photoDataUrl: "" },
-  { id: "gym-a-002", workout: "A", order: 2, name: "Crucifixo maquina", load: "", sets: "4", reps: "8-10", note: "", photoDataUrl: "" },
-  { id: "gym-a-003", workout: "A", order: 3, name: "Pulley", load: "", sets: "4", reps: "8-10", note: "", photoDataUrl: "" },
-  { id: "gym-a-004", workout: "A", order: 4, name: "Remada alta", load: "", sets: "4", reps: "8-10", note: "", photoDataUrl: "" },
-  { id: "gym-a-005", workout: "A", order: 5, name: "Elevacao lateral", load: "", sets: "4", reps: "10", note: "", photoDataUrl: "" },
-  { id: "gym-a-006", workout: "A", order: 6, name: "Elevacao frontal", load: "", sets: "4", reps: "10", note: "", photoDataUrl: "" },
-  { id: "gym-a-007", workout: "A", order: 7, name: "Rosca direta", load: "", sets: "4", reps: "12", note: "", photoDataUrl: "" },
-  { id: "gym-a-008", workout: "A", order: 8, name: "Triceps corda", load: "", sets: "4", reps: "12", note: "", photoDataUrl: "" },
-  { id: "gym-b-001", workout: "B", order: 1, name: "Extensora unilateral", load: "", sets: "4", reps: "10", note: "", photoDataUrl: "" },
-  { id: "gym-b-002", workout: "B", order: 2, name: "Leg 45", load: "", sets: "4", reps: "10", note: "", photoDataUrl: "" },
-  { id: "gym-b-003", workout: "B", order: 3, name: "Flexora vertical", load: "", sets: "4", reps: "10", note: "", photoDataUrl: "" },
-  { id: "gym-b-004", workout: "B", order: 4, name: "Hack squat", load: "", sets: "4", reps: "10", note: "", photoDataUrl: "" },
-  { id: "gym-b-005", workout: "B", order: 5, name: "Panturrilha", load: "", sets: "4", reps: "10", note: "", photoDataUrl: "" },
-  { id: "gym-b-006", workout: "B", order: 6, name: "Abdutora", load: "", sets: "4", reps: "10", note: "", photoDataUrl: "" },
-  { id: "gym-b-007", workout: "B", order: 7, name: "Mesa flexora", load: "", sets: "4", reps: "10", note: "", photoDataUrl: "" },
-];
+let isWorkoutCardOpen = false;
+let isTemplateEditMode = false;
+const openExercisePhotos = new Set();
+const DEFAULT_WORKOUT_TEMPLATES = {
+  A: {
+    title: "Treino A - Superiores",
+    groups: [
+      {
+        title: "Superiores",
+        exercises: [
+          createTemplateExercise("Supino inclinado"),
+          createTemplateExercise("Crucifixo maquina"),
+          createTemplateExercise("Pulley"),
+          createTemplateExercise("Remada alta"),
+          createTemplateExercise("Elevacao lateral"),
+          createTemplateExercise("Elevacao frontal"),
+          createTemplateExercise("Rosca direta"),
+          createTemplateExercise("Triceps corda"),
+        ],
+      },
+    ],
+  },
+  B: {
+    title: "Treino B - Inferiores",
+    groups: [
+      {
+        title: "Inferiores",
+        exercises: [
+          createTemplateExercise("Extensora unilateral"),
+          createTemplateExercise("Leg 45"),
+          createTemplateExercise("Flexora vertical"),
+          createTemplateExercise("Hack squat"),
+          createTemplateExercise("Panturrilha"),
+          createTemplateExercise("Abdutora"),
+          createTemplateExercise("Mesa flexora"),
+        ],
+      },
+    ],
+  },
+};
 
 function getTodayKey() {
   const today = new Date();
@@ -108,28 +135,96 @@ function saveData(data) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 }
 
-function ensureGymData(data) {
-  if (!data.gym) {
-    data.gym = { exercises: [] };
-  }
-
-  if (!Array.isArray(data.gym.exercises)) {
-    data.gym.exercises = [];
-  }
-
-  return data.gym;
+function createTemplateExercise(name) {
+  return {
+    name,
+    weight: "",
+    notes: "",
+    photo: "",
+  };
 }
 
-function seedInitialGymExercises(data) {
-  const gymData = ensureGymData(data);
-
-  if (gymData.exercises.length > 0) {
-    return false;
+function normalizeTemplateExercise(exercise) {
+  if (typeof exercise === "string") {
+    return createTemplateExercise(exercise);
   }
 
-  gymData.exercises = INITIAL_GYM_EXERCISES.map((exercise) => ({ ...exercise }));
+  return {
+    name: exercise?.name || "Exercicio",
+    weight: exercise?.weight || exercise?.load || "",
+    notes: exercise?.notes || exercise?.note || "",
+    photo: exercise?.photo || exercise?.photoDataUrl || "",
+  };
+}
 
-  return true;
+function cloneDefaultWorkoutTemplates() {
+  return JSON.parse(JSON.stringify(DEFAULT_WORKOUT_TEMPLATES));
+}
+
+function migrateGymExercisesToTemplates(data) {
+  const exercises = data.gym?.exercises;
+
+  if (!Array.isArray(exercises) || exercises.length === 0) {
+    return null;
+  }
+
+  return {
+    A: {
+      title: "Treino A - Superiores",
+      groups: [
+        {
+          title: "Exercicios",
+          exercises: exercises
+            .filter((exercise) => exercise.workout === "A")
+            .sort((first, second) => (Number(first.order) || 0) - (Number(second.order) || 0))
+            .map(normalizeTemplateExercise)
+            .filter(Boolean),
+        },
+      ],
+    },
+    B: {
+      title: "Treino B - Inferiores",
+      groups: [
+        {
+          title: "Exercicios",
+          exercises: exercises
+            .filter((exercise) => exercise.workout === "B")
+            .sort((first, second) => (Number(first.order) || 0) - (Number(second.order) || 0))
+            .map(normalizeTemplateExercise)
+            .filter(Boolean),
+        },
+      ],
+    },
+  };
+}
+
+function ensureWorkoutTemplates(data) {
+  if (!data.workoutTemplates) {
+    data.workoutTemplates = migrateGymExercisesToTemplates(data) || cloneDefaultWorkoutTemplates();
+  }
+
+  ["A", "B"].forEach((workout) => {
+    if (!data.workoutTemplates[workout]) {
+      data.workoutTemplates[workout] = cloneDefaultWorkoutTemplates()[workout];
+    }
+
+    if (!Array.isArray(data.workoutTemplates[workout].groups)) {
+      data.workoutTemplates[workout].groups = [{ title: "Exercicios", exercises: [] }];
+    }
+
+    if (!data.workoutTemplates[workout].groups[0]) {
+      data.workoutTemplates[workout].groups[0] = { title: "Exercicios", exercises: [] };
+    }
+
+    if (!Array.isArray(data.workoutTemplates[workout].groups[0].exercises)) {
+      data.workoutTemplates[workout].groups[0].exercises = [];
+    }
+
+    data.workoutTemplates[workout].groups[0].exercises =
+      data.workoutTemplates[workout].groups[0].exercises.map(normalizeTemplateExercise);
+  });
+
+  return data.workoutTemplates;
 }
 
 function getNumber(value) {
@@ -351,6 +446,14 @@ function updateActivityFields() {
   gymFields.forEach((field) => {
     field.classList.toggle("is-hidden", !isGym);
   });
+
+  workoutToggle.classList.toggle("is-hidden", !isGym);
+
+  if (!isGym) {
+    isWorkoutCardOpen = false;
+  }
+
+  updateWorkoutCard();
 }
 
 function renderActivities() {
@@ -421,6 +524,11 @@ function setupActivityForm() {
   renderActivities();
 
   activityForm.activityType.addEventListener("change", updateActivityFields);
+  activityForm.workoutPlan.addEventListener("change", updateWorkoutCard);
+  workoutToggle.addEventListener("click", () => {
+    isWorkoutCardOpen = !isWorkoutCardOpen;
+    updateWorkoutCard();
+  });
 
   activityForm.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -452,7 +560,19 @@ function setupActivityForm() {
   });
 }
 
-function renderGymExerciseList(container, exercises) {
+function getSelectedWorkoutTemplate(data) {
+  const templates = ensureWorkoutTemplates(data);
+  const selectedWorkout = activityForm.workoutPlan.value || "A";
+
+  return templates[selectedWorkout];
+}
+
+function saveWorkoutTemplates(data, templates) {
+  data.workoutTemplates = templates;
+  saveData(data);
+}
+
+function renderGymExerciseList(container, exercises, workout) {
   container.innerHTML = "";
 
   if (exercises.length === 0) {
@@ -464,161 +584,284 @@ function renderGymExerciseList(container, exercises) {
     const item = document.createElement("div");
     const content = document.createElement("div");
     const title = document.createElement("p");
-    const meta = document.createElement("p");
-    const details = [];
+    const photoKey = `${workout}-${exercise.index}`;
 
     item.className = "gym-exercise-item";
     content.className = "gym-exercise-content";
     title.className = "activity-title";
-    title.textContent = `${exercise.order || "-"} - ${exercise.name || "Exercicio"}`;
-    meta.className = "activity-meta";
-
-    details.push(`${exercise.sets || "-"}x${exercise.reps || "-"}`);
-
-    if (exercise.load) {
-      details.push(`carga ${exercise.load}`);
-    }
-
-    meta.textContent = details.join(" | ");
+    title.textContent = `${exercise.index + 1} - ${exercise.name}`;
 
     content.appendChild(title);
-    content.appendChild(meta);
 
-    if (exercise.note) {
-      const note = document.createElement("p");
+    if (!isTemplateEditMode) {
+      const details = [];
 
-      note.className = "activity-notes";
-      note.textContent = exercise.note;
-      content.appendChild(note);
+      if (exercise.weight) {
+        details.push(`carga ${exercise.weight}`);
+      }
+
+      if (details.length > 0) {
+        const meta = document.createElement("p");
+
+        meta.className = "activity-meta";
+        meta.textContent = details.join(" | ");
+        content.appendChild(meta);
+      }
+
+      if (exercise.notes) {
+        const notes = document.createElement("p");
+
+        notes.className = "activity-notes";
+        notes.textContent = exercise.notes;
+        content.appendChild(notes);
+      }
+
+      if (exercise.photo && openExercisePhotos.has(photoKey)) {
+        const image = document.createElement("img");
+
+        image.className = "gym-exercise-photo";
+        image.src = exercise.photo;
+        image.alt = `Foto de ${exercise.name}`;
+        content.appendChild(image);
+      }
     }
 
-    const editForm = document.createElement("form");
-    const loadLabel = document.createElement("label");
-    const loadInput = document.createElement("input");
-    const noteLabel = document.createElement("label");
-    const noteInput = document.createElement("input");
-    const photoLabel = document.createElement("label");
-    const photoInput = document.createElement("input");
-    const submitButton = document.createElement("button");
+    if (isTemplateEditMode) {
+      const editForm = document.createElement("form");
+      const nameLabel = document.createElement("label");
+      const nameInput = document.createElement("input");
+      const weightLabel = document.createElement("label");
+      const weightInput = document.createElement("input");
+      const notesLabel = document.createElement("label");
+      const notesInput = document.createElement("textarea");
+      const photoLabel = document.createElement("label");
+      const photoInput = document.createElement("input");
+      const saveButton = document.createElement("button");
 
-    editForm.className = "gym-edit-form";
-    loadLabel.textContent = "Carga";
-    loadInput.name = "load";
-    loadInput.type = "text";
-    loadInput.value = exercise.load || "";
-    loadInput.placeholder = "Ex: 40kg";
-    noteLabel.textContent = "Observacao";
-    noteInput.name = "note";
-    noteInput.type = "text";
-    noteInput.value = exercise.note || "";
-    noteInput.placeholder = "Ajuste rapido";
-    photoLabel.textContent = "Foto opcional";
-    photoInput.name = "photo";
-    photoInput.type = "file";
-    photoInput.accept = "image/*";
-    submitButton.type = "submit";
-    submitButton.textContent = "Salvar ajuste";
+      editForm.className = "template-exercise-form";
+      nameLabel.textContent = "Exercicio";
+      nameInput.name = "name";
+      nameInput.type = "text";
+      nameInput.value = exercise.name;
+      weightLabel.textContent = "Carga/peso";
+      weightInput.name = "weight";
+      weightInput.type = "text";
+      weightInput.value = exercise.weight || "";
+      weightInput.placeholder = "Ex: 40kg";
+      notesLabel.textContent = "Observacoes";
+      notesInput.name = "notes";
+      notesInput.rows = 2;
+      notesInput.value = exercise.notes || "";
+      photoLabel.textContent = "Foto";
+      photoInput.name = "photo";
+      photoInput.type = "file";
+      photoInput.accept = "image/*";
+      saveButton.type = "submit";
+      saveButton.textContent = "Salvar";
 
-    loadLabel.appendChild(loadInput);
-    noteLabel.appendChild(noteInput);
-    photoLabel.appendChild(photoInput);
-    editForm.appendChild(loadLabel);
-    editForm.appendChild(noteLabel);
-    editForm.appendChild(photoLabel);
-    editForm.appendChild(submitButton);
-    editForm.addEventListener("submit", async (event) => {
-      event.preventDefault();
+      nameLabel.appendChild(nameInput);
+      weightLabel.appendChild(weightInput);
+      notesLabel.appendChild(notesInput);
+      photoLabel.appendChild(photoInput);
+      editForm.appendChild(nameLabel);
+      editForm.appendChild(weightLabel);
+      editForm.appendChild(notesLabel);
+      editForm.appendChild(photoLabel);
 
-      const data = loadData();
-      const gymData = ensureGymData(data);
-      const savedExercise = gymData.exercises.find((itemData) => itemData.id === exercise.id);
+      if (exercise.photo) {
+        const removePhotoButton = document.createElement("button");
 
-      if (!savedExercise) {
-        return;
+        removePhotoButton.type = "button";
+        removePhotoButton.textContent = "Remover foto";
+        removePhotoButton.addEventListener("click", () => {
+          updateTemplateExercise(workout, exercise.index, { photo: "" });
+          openExercisePhotos.delete(photoKey);
+        });
+        editForm.appendChild(removePhotoButton);
       }
 
-      const photoDataUrl = await readFileAsDataUrl(photoInput.files[0]);
+      editForm.appendChild(saveButton);
+      editForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
 
-      savedExercise.load = loadInput.value.trim();
-      savedExercise.note = noteInput.value.trim();
+        const photoDataUrl = await readFileAsDataUrl(photoInput.files[0]);
 
-      if (photoDataUrl) {
-        savedExercise.photoDataUrl = photoDataUrl;
-      }
+        updateTemplateExercise(workout, exercise.index, {
+          name: nameInput.value.trim() || "Exercicio",
+          weight: weightInput.value.trim(),
+          notes: notesInput.value.trim(),
+          photo: photoDataUrl || exercise.photo || "",
+        });
+      });
 
-      saveData(data);
-      renderGymExercises();
-    });
-
-    content.appendChild(editForm);
-
-    if (exercise.photoDataUrl) {
-      const image = document.createElement("img");
-
-      image.className = "gym-exercise-photo";
-      image.src = exercise.photoDataUrl;
-      image.alt = `Foto de ${exercise.name || "exercicio"}`;
-      item.appendChild(image);
+      content.appendChild(editForm);
     }
 
     item.appendChild(content);
+
+    if (exercise.photo && !isTemplateEditMode) {
+      const photoButton = document.createElement("button");
+
+      photoButton.className = "photo-toggle";
+      photoButton.type = "button";
+      photoButton.textContent = "\u{1f4f7}";
+      photoButton.addEventListener("click", () => {
+        if (openExercisePhotos.has(photoKey)) {
+          openExercisePhotos.delete(photoKey);
+        } else {
+          openExercisePhotos.add(photoKey);
+        }
+
+        renderGymExercises();
+      });
+      item.appendChild(photoButton);
+    }
+
+    if (isTemplateEditMode) {
+      const actions = document.createElement("div");
+      const moveUpButton = document.createElement("button");
+      const moveDownButton = document.createElement("button");
+      const removeButton = document.createElement("button");
+
+      actions.className = "exercise-actions";
+      moveUpButton.type = "button";
+      moveUpButton.textContent = "\u2191";
+      moveUpButton.disabled = exercise.index === 0;
+      moveDownButton.type = "button";
+      moveDownButton.textContent = "\u2193";
+      moveDownButton.disabled = exercise.index === exercises.length - 1;
+      removeButton.type = "button";
+      removeButton.textContent = "\u2715";
+
+      moveUpButton.addEventListener("click", () => {
+        moveTemplateExercise(workout, exercise.index, -1);
+      });
+      moveDownButton.addEventListener("click", () => {
+        moveTemplateExercise(workout, exercise.index, 1);
+      });
+      removeButton.addEventListener("click", () => {
+        removeTemplateExercise(workout, exercise.index);
+      });
+
+      actions.appendChild(moveUpButton);
+      actions.appendChild(moveDownButton);
+      actions.appendChild(removeButton);
+      item.appendChild(actions);
+    }
+
     container.appendChild(item);
   });
 }
 
 function renderGymExercises() {
   const data = loadData();
-  const gymData = ensureGymData(data);
-  const sortedExercises = [...gymData.exercises].sort((first, second) => {
-    const firstOrder = Number(first.order) || 0;
-    const secondOrder = Number(second.order) || 0;
+  const templates = ensureWorkoutTemplates(data);
 
-    return firstOrder - secondOrder;
-  });
+  saveData(data);
 
   renderGymExerciseList(
     gymWorkoutA,
-    sortedExercises.filter((exercise) => exercise.workout === "A"),
+    templates.A.groups[0].exercises.map((exercise, index) => ({ ...exercise, index })),
+    "A",
   );
   renderGymExerciseList(
     gymWorkoutB,
-    sortedExercises.filter((exercise) => exercise.workout === "B"),
+    templates.B.groups[0].exercises.map((exercise, index) => ({ ...exercise, index })),
+    "B",
   );
+}
+
+function updateTemplateExercise(workout, index, updates) {
+  const data = loadData();
+  const templates = ensureWorkoutTemplates(data);
+  const exercise = templates[workout].groups[0].exercises[index];
+
+  if (!exercise) {
+    return;
+  }
+
+  templates[workout].groups[0].exercises[index] = {
+    ...exercise,
+    ...updates,
+  };
+  saveWorkoutTemplates(data, templates);
+  renderGymExercises();
+}
+
+function moveTemplateExercise(workout, index, direction) {
+  const data = loadData();
+  const templates = ensureWorkoutTemplates(data);
+  const exercises = templates[workout].groups[0].exercises;
+  const targetIndex = index + direction;
+
+  if (targetIndex < 0 || targetIndex >= exercises.length) {
+    return;
+  }
+
+  [exercises[index], exercises[targetIndex]] = [exercises[targetIndex], exercises[index]];
+  saveWorkoutTemplates(data, templates);
+  renderGymExercises();
+}
+
+function removeTemplateExercise(workout, index) {
+  const data = loadData();
+  const templates = ensureWorkoutTemplates(data);
+
+  templates[workout].groups[0].exercises.splice(index, 1);
+  saveWorkoutTemplates(data, templates);
+  renderGymExercises();
+}
+
+function addTemplateExercise(workout, exerciseName) {
+  const data = loadData();
+  const templates = ensureWorkoutTemplates(data);
+
+  templates[workout].groups[0].exercises.push(createTemplateExercise(exerciseName));
+  saveWorkoutTemplates(data, templates);
+  renderGymExercises();
+}
+
+function updateWorkoutCard() {
+  const isGym = activityForm.activityType.value === "Academia";
+  const selectedWorkout = activityForm.workoutPlan.value || "A";
+  const data = loadData();
+  const selectedTemplate = getSelectedWorkoutTemplate(data);
+  const shouldShowCard = isGym && isWorkoutCardOpen;
+
+  workoutToggle.textContent = isWorkoutCardOpen ? "Ocultar ficha do treino" : "Ver ficha do treino";
+  gymCard.classList.toggle("is-hidden", !shouldShowCard);
+  exerciseAddForm.classList.toggle("is-hidden", !shouldShowCard || !isTemplateEditMode);
+  templateEditToggle.textContent = isTemplateEditMode ? "Sair do modo editar" : "Modo editar ficha";
+  gymCardTitle.textContent = selectedTemplate.title || `Treino ${selectedWorkout}`;
+  gymWorkoutA.closest(".gym-workout").classList.toggle("is-hidden", selectedWorkout !== "A");
+  gymWorkoutB.closest(".gym-workout").classList.toggle("is-hidden", selectedWorkout !== "B");
 }
 
 function setupGymForm() {
   const data = loadData();
 
-  if (seedInitialGymExercises(data)) {
-    saveData(data);
-  }
-
+  ensureWorkoutTemplates(data);
+  saveData(data);
   renderGymExercises();
+  updateWorkoutCard();
 
-  gymForm.addEventListener("submit", async (event) => {
+  templateEditToggle.addEventListener("click", () => {
+    isTemplateEditMode = !isTemplateEditMode;
+    updateWorkoutCard();
+    renderGymExercises();
+  });
+
+  exerciseAddForm.addEventListener("submit", (event) => {
     event.preventDefault();
 
-    const data = loadData();
-    const gymData = ensureGymData(data);
-    const photoFile = gymForm.gymPhoto.files[0];
-    const photoDataUrl = await readFileAsDataUrl(photoFile);
+    const exerciseName = exerciseAddForm.newExerciseName.value.trim();
 
-    const exercise = {
-      id: String(Date.now()),
-      workout: gymForm.gymWorkout.value,
-      order: gymForm.gymOrder.value,
-      name: gymForm.gymExerciseName.value.trim(),
-      load: gymForm.gymLoad.value.trim(),
-      sets: gymForm.gymSets.value.trim(),
-      reps: gymForm.gymReps.value.trim(),
-      note: gymForm.gymNote.value.trim(),
-      photoDataUrl,
-    };
+    if (!exerciseName) {
+      return;
+    }
 
-    gymData.exercises.push(exercise);
-    saveData(data);
-    gymForm.reset();
-    renderGymExercises();
+    addTemplateExercise(activityForm.workoutPlan.value || "A", exerciseName);
+    exerciseAddForm.reset();
   });
 }
 
