@@ -2,6 +2,8 @@
 
 ## 2026-05-25
 
+- Adicionado `docs/GYM_ADMIN_FLOW.md` com a especificacao inicial do modulo Admin do LTracker Gym.
+- Admin definido como ferramenta simples para criar alunos, copiar templates A/B/C para fichas individuais, editar fichas e acompanhar timeline do aluno.
 - Aba Historico da branch `gym-edition` foi reformulada como linha do tempo de acompanhamento do aluno.
 - Removidas da interface de Historico as metricas pessoais antigas, como km, sono e peso.
 - Adicionado resumo compacto com treinos concluidos, ultimo treino, sequencia recente e treino ativo.
