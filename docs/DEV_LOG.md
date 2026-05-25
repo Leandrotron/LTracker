@@ -2,6 +2,8 @@
 
 ## 2026-05-25
 
+- Criada a branch conceitual `gym-edition` para explorar o LTracker Gym separadamente do LTracker pessoal.
+- Adicionado `docs/GYM_PRODUCT_VISION.md` com a visao inicial do produto focado em fichas de treino digitais para academias locais.
 - Adicionados botoes "Exportar dados" e "Importar dados" para backup manual do conteudo salvo em `localStorage` na chave `ltracker.data`.
 - Exportacao baixa um arquivo `.json` com o backup local atual.
 - Importacao valida se o JSON parece um backup do LTracker, pede confirmacao antes de substituir os dados locais e re-renderiza a interface apos concluir.
