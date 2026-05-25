@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LTracker Gym Admin</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">LTracker Gym</p>
+          <h1>Admin</h1>
+          <p class="current-student" id="current-student-label">Aluno atual: sem aluno selecionado</p>
+        </div>
+        <p class="date-label">Professor/academia</p>
+      </header>
+
+      <section class="tab-panel" id="tab-admin" aria-label="Admin local">
+        <div class="today-grid">
+          <article class="card">
+            <div class="card-header">
+              <p class="card-kicker">Alunos</p>
+              <h2>Lista local</h2>
+            </div>
+            <button class="secondary-button" id="new-student-toggle" type="button">Novo aluno</button>
+            <form class="student-form is-hidden" id="student-form">
+              <label>
+                Nome
+                <input id="newStudentName" name="newStudentName" type="text" placeholder="Nome do aluno" />
+              </label>
+
+              <label>
+                Data de inicio
+                <input id="newStudentStartDate" name="newStudentStartDate" type="date" />
+              </label>
+
+              <label>
+                Observacao opcional
+                <textarea id="newStudentNote" name="newStudentNote" rows="3" placeholder="Observacao inicial"></textarea>
+              </label>
+
+              <button type="submit">Salvar aluno</button>
+            </form>
+            <div class="student-list" id="student-list" aria-live="polite"></div>
+          </article>
+
+          <article class="card">
+            <div class="card-header">
+              <p class="card-kicker">Programas</p>
+              <h2>Lista local</h2>
+            </div>
+            <button class="secondary-button" id="new-program-toggle" type="button">Novo programa</button>
+            <form class="template-library-form is-hidden" id="template-library-form">
+              <div class="form-grid">
+                <label>
+                  Nome do programa
+                  <input id="templateLibraryName" name="templateLibraryName" type="text" placeholder="Ex: Hipertrofia 01" />
+                </label>
+
+                <label>
+                  Observacao opcional
+                  <input id="templateLibraryNote" name="templateLibraryNote" type="text" placeholder="Foco, fase ou recomendacao" />
+                </label>
+              </div>
+
+              <button type="submit">Criar programa</button>
+            </form>
+            <div class="template-library-list" id="template-library-list" aria-live="polite"></div>
+          </article>
+
+          <article class="card card-wide">
+            <div class="card-header">
+              <p class="card-kicker">Detalhe selecionado</p>
+              <h2 id="admin-detail-title">Selecione um aluno ou programa</h2>
+            </div>
+
+            <div class="student-detail" id="student-detail"></div>
+
+            <form class="apply-template-form is-hidden" id="apply-template-form">
+                <div class="form-grid">
+                  <label>
+                    Programa
+                    <select id="applyTemplateId" name="applyTemplateId"></select>
+                  </label>
+                </div>
+
+                <button type="submit">Aplicar programa ao aluno</button>
+                <p class="form-note">Os treinos A/B/C serao copiados para a ficha individual. Mudancas futuras no programa nao alteram este aluno.</p>
+              </form>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>

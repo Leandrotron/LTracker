@@ -103,14 +103,24 @@ ltracker.data
 - `duration` guarda minutos em decimal normalizado quando informado. Exemplo: `32:30` vira `32.5`.
 - Corrida, Bike e Caminhada usam `distance`, tambem normalizado com ponto decimal quando informado.
 - Academia usa `workoutPlan` e `workoutFeeling`.
-- `workoutTemplates` guarda os templates locais dos treinos A e B.
-- `gym.currentStudentName` guarda o nome temporario do aluno atual na branch `gym-edition`.
-- Cada template possui `title` e `groups`; nesta etapa, o app usa um grupo simples por treino.
+- `workoutTemplates` guarda a estrutura local de treinos A/B/C usada pela ficha.
+- `gym.students` guarda a lista local inicial de alunos cadastrados no Admin da branch `gym-edition`.
+- Cada aluno usa `id`, `name`, `startDate`, `note`, `createdAt` e pode ter `workoutTemplates`.
+- `student.currentProgram` guarda o programa atual copiado para o aluno, com `name`, `note`, `sourceProgramId`, `workoutTemplates` e `appliedAt`.
+- `student.workoutTemplates` guarda a ficha individual do aluno para compatibilidade e execucao no app do aluno.
+- `gym.programLibrary` guarda programas base da academia, com `id`, `name`, `note`, `workoutTemplates` e `createdAt`.
+- Cada programa contem treinos internos dentro de `workoutTemplates`; a chave pode ser `A`, `B`, `C` ou outro texto curto.
+- Cada treino interno pode ter `title` opcional, como Superiores, Inferiores ou Full body.
+- Cada exercicio em `gym.programLibrary[].workoutTemplates[treino].groups[].exercises` usa `name`, `muscleGroup`, `weight`, `notes` e `photo`.
+- `gym.templateLibrary` pode existir em backups antigos e e migrado localmente para `gym.programLibrary`.
+- `gym.currentStudentId` guarda o aluno selecionado como aluno atual.
+- `gym.currentStudentName` guarda o nome do aluno atual para compatibilidade com a versao local inicial.
+- Cada treino possui `title` e `groups`; nesta etapa, o app usa um grupo simples por treino.
 - A lista `groups[].exercises` guarda objetos de exercicio na ordem de execucao.
-- Cada exercicio de template usa `name`, `weight`, `notes` e `photo`.
+- Cada exercicio de treino usa `name`, `weight`, `notes` e `photo`.
 - `photo` guarda uma foto opcional do equipamento como data URL. Quando nao houver foto, fica vazio.
 - Dados antigos em que `groups[].exercises` continha apenas strings sao convertidos automaticamente para objetos.
-- Quando `workoutTemplates` ainda nao existir, o app usa os templates padrao atuais.
+- Quando `workoutTemplates` ainda nao existir, o app usa os programas/treinos padrao atuais.
 - Se houver dados antigos em `gym.exercises`, o app tenta migrar os nomes e a ordem para `workoutTemplates`.
 - O modo editar ficha permite adicionar, remover, reorganizar e editar detalhes opcionais dos exercicios.
 - O resumo semanal usa apenas os dados ja existentes em `days`.

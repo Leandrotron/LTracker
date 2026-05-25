@@ -2,8 +2,29 @@
 
 ## 2026-05-25
 
+- Corrigida a adicao de multiplos exercicios em treinos internos de programas no Admin.
+- Mutacoes do editor de programa passam a re-renderizar tambem o detalhe selecionado, preservando inputs/listeners apos cada alteracao.
+- Admin reorganizado em tres secoes claras: Alunos, Programas e Detalhe selecionado.
+- Formulario de novo aluno, lista de programas e editor de programa deixam de competir na mesma area visual.
+- Editor de treinos internos so aparece quando um programa e aberto; aplicacao de programa so aparece quando um aluno e aberto.
+- Conceito de templates evoluido para Programas de treino, com treinos internos A/B/C.
+- Admin passa a criar programas, adicionar treinos internos e editar exercicios dentro de cada treino do programa.
+- App do aluno passa a renderizar os seletores de treino a partir dos treinos internos do programa atual.
+- Ao aplicar um programa ao aluno, o app copia todos os treinos A/B/C para `student.currentProgram` e `student.workoutTemplates`.
+- Ajustado o fluxo do Admin: criacao de aluno nao aplica programas automaticamente.
+- Lista de alunos passa a abrir detalhes do aluno selecionado, com dados, resumo da ficha atual e aplicacao de programa no contexto do aluno.
+- Aplicacao de programa continua copiando exercicios para a ficha individual, preservando independencia em relacao ao programa base.
+- Admin local ganha biblioteca inicial de programas de treino em `admin.html`.
+- Programas locais permitem nome, observacao, treinos A/B/C, exercicios editaveis, reordenacao, remocao, carga sugerida, grupo muscular, observacao e foto opcional.
+- Admin permite aplicar um programa ao aluno atual copiando os treinos para `student.workoutTemplates`, sem referencia dinamica ao programa original.
+- Admin local foi separado da interface do aluno: `index.html` fica para o aluno e `admin.html` para professor/academia.
+- `app.js` passa a inicializar apenas os blocos presentes na pagina atual, permitindo compartilhar logica e `localStorage` entre aluno e Admin.
+- Criada aba Admin local inicial na branch `gym-edition`, ainda sem backend/login.
+- Admin permite cadastrar alunos com nome, data de inicio e observacao opcional em `localStorage`.
+- Lista de alunos permite selecionar o aluno atual e manter a selecao apos recarregar a pagina.
+- Nome do aluno atual passa a aparecer no topo do app e continua salvo no mesmo backup JSON.
 - Adicionado `docs/GYM_ADMIN_FLOW.md` com a especificacao inicial do modulo Admin do LTracker Gym.
-- Admin definido como ferramenta simples para criar alunos, copiar templates A/B/C para fichas individuais, editar fichas e acompanhar timeline do aluno.
+- Admin definido como ferramenta simples para criar alunos, copiar programas para fichas individuais, editar fichas e acompanhar timeline do aluno.
 - Aba Historico da branch `gym-edition` foi reformulada como linha do tempo de acompanhamento do aluno.
 - Removidas da interface de Historico as metricas pessoais antigas, como km, sono e peso.
 - Adicionado resumo compacto com treinos concluidos, ultimo treino, sequencia recente e treino ativo.

@@ -4,6 +4,8 @@
 
 - Reposicionar a interface inicial como ficha de treino digital para academias locais.
 - Organizar a experiencia em abas simples: Ficha, Historico e Perfil.
+- Separar ambiente do aluno (`index.html`) e Admin local (`admin.html`).
+- Criar biblioteca local de programas no Admin e aplicar copias independentes na ficha do aluno.
 - Priorizar aluno atual, ficha A/B, exercicios em ordem, fotos, observacoes e acao de marcar treino feito.
 - Transformar exercicios da ficha em itens de execucao com conclusao individual e progresso simples.
 - Transformar Historico em linha do tempo de acompanhamento do aluno, sem metricas pessoais antigas.

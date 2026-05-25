@@ -13,6 +13,7 @@
           <p class="eyebrow">LTracker Gym</p>
           <h1>Ficha digital</h1>
           <p class="current-date" id="current-date"></p>
+          <p class="current-student" id="current-student-label">Aluno atual: sem aluno selecionado</p>
         </div>
         <p class="date-label">Academia local</p>
       </header>
@@ -31,11 +32,7 @@
               <h2 id="gym-card-title">Treino A</h2>
             </div>
 
-            <div class="workout-tabs" aria-label="Treinos disponiveis">
-              <button class="workout-tab is-active" type="button" data-workout="A">A</button>
-              <button class="workout-tab" type="button" data-workout="B">B</button>
-              <button class="workout-tab is-muted" type="button" disabled>C futuro</button>
-            </div>
+            <div class="workout-tabs" id="workout-tabs" aria-label="Treinos disponiveis"></div>
             <p class="workout-progress" id="workout-progress">0 de 0 exercicios concluidos</p>
 
             <form class="exercise-add-form is-hidden" id="exercise-add-form">
@@ -232,6 +229,7 @@
           </article>
         </div>
       </section>
+
     </main>
 
     <script src="app.js"></script>

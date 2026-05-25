@@ -35,7 +35,7 @@ O MVP deve entregar uma ficha de treino digital funcional:
 - Interface inicial com foco em LTracker Gym, nao no diario pessoal.
 - Navegacao simples por abas: Ficha como tela principal, Historico como apoio e Perfil como configuracao.
 - Area simples de aluno atual com nome temporario salvo localmente no mesmo backup de dados.
-- Treinos A/B/C ou nomes personalizados.
+- Programas de treino com treinos internos A/B/C ou nomes personalizados.
 - Exercicios em ordem dentro de cada treino.
 - Exercicios como itens de execucao, com conclusao individual e feedback visual discreto.
 - Foto opcional do aparelho ou exercicio.

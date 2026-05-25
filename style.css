@@ -53,6 +53,14 @@ body {
   font-weight: 700;
 }
 
+.current-student {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
 .eyebrow,
 .card-kicker,
 .date-label {
@@ -333,7 +341,8 @@ button:hover {
 }
 
 .activity-list,
-.timeline-list {
+.timeline-list,
+.student-list {
   display: grid;
   gap: 10px;
   margin-top: 18px;
@@ -678,6 +687,126 @@ button:hover {
   line-height: 1.45;
 }
 
+.student-form,
+.template-library-form,
+.apply-template-form {
+  display: grid;
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.student-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: rgba(15, 17, 21, 0.42);
+}
+
+.student-item.is-current {
+  border-color: rgba(142, 224, 197, 0.42);
+  background: rgba(142, 224, 197, 0.08);
+}
+
+.student-item-content {
+  min-width: 0;
+}
+
+.student-item-title {
+  margin: 0 0 6px;
+  color: var(--text);
+  font-size: 0.96rem;
+  font-weight: 800;
+}
+
+.student-item .secondary-button {
+  min-width: 118px;
+}
+
+.student-detail {
+  display: grid;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.student-detail-header {
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: rgba(15, 17, 21, 0.42);
+}
+
+.student-workout-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.student-workout-item {
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: rgba(244, 246, 248, 0.04);
+}
+
+.template-library-list {
+  display: grid;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.template-library-item {
+  display: grid;
+  gap: 14px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: rgba(15, 17, 21, 0.42);
+}
+
+.template-library-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.template-library-exercises {
+  display: grid;
+  gap: 10px;
+}
+
+.program-workout-block {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: rgba(15, 17, 21, 0.34);
+}
+
+.program-workout-block h3 {
+  margin: 0;
+  color: var(--text);
+  font-size: 0.95rem;
+}
+
+.template-inline-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+}
+
+.admin-template-exercise {
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: rgba(244, 246, 248, 0.04);
+}
+
 .empty-state {
   min-height: 96px;
   display: flex;
@@ -710,9 +839,15 @@ button:hover {
   }
 
   .app-tabs {
+    grid-template-columns: repeat(3, max-content);
+    overflow-x: auto;
     margin-right: -12px;
     margin-left: -12px;
     padding: 8px 12px;
+  }
+
+  .tab-button {
+    min-width: 92px;
   }
 
   .today-grid {
@@ -759,6 +894,22 @@ button:hover {
   }
 
   .template-exercise-form {
+    grid-template-columns: 1fr;
+  }
+
+  .student-item {
+    grid-template-columns: 1fr;
+  }
+
+  .student-workout-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .student-item .secondary-button {
+    width: 100%;
+  }
+
+  .template-inline-form {
     grid-template-columns: 1fr;
   }
 }
