@@ -32,6 +32,7 @@
 - Ajustes responsivos.
 - Revisao de textos e estados vazios.
 - Preparacao para uso via GitHub Pages.
+- Backup manual por exportacao/importacao de JSON do `localStorage`.
 - Pequenas melhorias de usabilidade.
 
 ## Milestone 6: Academia interna

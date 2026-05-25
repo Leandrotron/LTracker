@@ -87,6 +87,9 @@ ltracker.data
 
 ## Observacoes
 
+- Backup manual exporta e importa exatamente o objeto salvo em `localStorage` na chave `ltracker.data`.
+- Um arquivo importado precisa ser um objeto JSON com `days` tambem como objeto. Campos opcionais atuais, como `workoutTemplates` e `gym`, devem permanecer como objetos quando existirem.
+- A importacao substitui o conteudo local somente apos confirmacao do usuario.
 - A data do dia deve ser a chave principal de consulta diaria.
 - Cada dia fica salvo dentro de `days` usando o formato `YYYY-MM-DD`.
 - `weight` guarda texto numerico normalizado com ponto decimal quando informado. Exemplo: `61,32` vira `61.32`.

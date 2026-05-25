@@ -1,5 +1,13 @@
 # DEV_LOG
 
+## 2026-05-25
+
+- Adicionados botoes "Exportar dados" e "Importar dados" para backup manual do conteudo salvo em `localStorage` na chave `ltracker.data`.
+- Exportacao baixa um arquivo `.json` com o backup local atual.
+- Importacao valida se o JSON parece um backup do LTracker, pede confirmacao antes de substituir os dados locais e re-renderiza a interface apos concluir.
+- Atualizada a observacao discreta do app para orientar que os dados ficam neste navegador e que exportar/importar deve ser usado para backup.
+- Mantida a ausencia de backend e preservado o schema atual.
+
 ## 2026-05-23
 
 - Exercicios dos templates A/B passam de string para objeto com `name`, `weight`, `notes` e `photo`.

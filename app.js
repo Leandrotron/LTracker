@@ -21,6 +21,10 @@ const weeklyBikeKm = document.querySelector("#weekly-bike-km");
 const weeklyWalkKm = document.querySelector("#weekly-walk-km");
 const weeklySleep = document.querySelector("#weekly-sleep");
 const weeklyWeight = document.querySelector("#weekly-weight");
+const exportDataButton = document.querySelector("#export-data");
+const importDataButton = document.querySelector("#import-data");
+const importFileInput = document.querySelector("#import-file");
+const backupStatus = document.querySelector("#backup-status");
 let isWorkoutCardOpen = false;
 let isTemplateEditMode = false;
 const openExercisePhotos = new Set();
@@ -154,6 +158,104 @@ function loadData() {
 
 function saveData(data) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+function isPlainObject(value) {
+  return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+
+function isValidLtrackerBackup(data) {
+  if (!isPlainObject(data) || !isPlainObject(data.days)) {
+    return false;
+  }
+
+  if (data.workoutTemplates !== undefined && !isPlainObject(data.workoutTemplates)) {
+    return false;
+  }
+
+  if (data.gym !== undefined && !isPlainObject(data.gym)) {
+    return false;
+  }
+
+  return true;
+}
+
+function setBackupStatus(message) {
+  backupStatus.textContent = message;
+}
+
+function getBackupFileName() {
+  return `ltracker-backup-${getTodayKey()}.json`;
+}
+
+function exportData() {
+  const savedData = localStorage.getItem(STORAGE_KEY);
+  const dataText = savedData || JSON.stringify({ days: {} }, null, 2);
+  const blob = new Blob([dataText], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = getBackupFileName();
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+  setBackupStatus("Backup exportado.");
+}
+
+function renderAppFromStorage() {
+  const data = loadData();
+
+  fillDailyForm(getTodayData(data));
+  saveData(data);
+  renderActivities();
+  renderGymExercises();
+  updateWorkoutCard();
+  renderWeeklySummary();
+}
+
+function importDataFromFile(file) {
+  if (!file) {
+    return;
+  }
+
+  const reader = new FileReader();
+
+  reader.addEventListener("load", () => {
+    try {
+      const importedData = JSON.parse(String(reader.result || ""));
+
+      if (!isValidLtrackerBackup(importedData)) {
+        setBackupStatus("Arquivo invalido para o LTracker.");
+        return;
+      }
+
+      const shouldImport = window.confirm(
+        "Importar este backup vai substituir os dados atuais deste navegador. Continuar?",
+      );
+
+      if (!shouldImport) {
+        setBackupStatus("Importacao cancelada.");
+        return;
+      }
+
+      saveData(importedData);
+      renderAppFromStorage();
+      setBackupStatus("Backup importado.");
+    } catch {
+      setBackupStatus("Nao foi possivel ler este JSON.");
+    } finally {
+      importFileInput.value = "";
+    }
+  });
+
+  reader.addEventListener("error", () => {
+    importFileInput.value = "";
+    setBackupStatus("Nao foi possivel ler o arquivo.");
+  });
+
+  reader.readAsText(file);
 }
 
 function getCanonicalExerciseName(name) {
@@ -931,6 +1033,16 @@ function setupGymForm() {
   });
 }
 
+function setupBackupActions() {
+  exportDataButton.addEventListener("click", exportData);
+  importDataButton.addEventListener("click", () => {
+    importFileInput.click();
+  });
+  importFileInput.addEventListener("change", () => {
+    importDataFromFile(importFileInput.files[0]);
+  });
+}
+
 function renderWeeklySummary() {
   const data = loadData();
   const weekKeys = getCurrentWeekKeys();
@@ -1005,6 +1117,7 @@ function renderWeeklySummary() {
   weeklyWeight.textContent = weightAverage ? `${weightAverage.toFixed(2)} kg` : "\u2014";
 }
 
+setupBackupActions();
 setupDailyForm();
 setupActivityForm();
 setupGymForm();

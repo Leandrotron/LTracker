@@ -13,7 +13,13 @@
           <p class="eyebrow">LTracker</p>
           <h1>Hoje</h1>
           <p class="current-date" id="current-date"></p>
-          <p class="storage-note">Dados salvos apenas neste dispositivo.</p>
+          <p class="storage-note">Nesta versão, os dados ficam salvos neste navegador. Use exportar/importar para backup.</p>
+          <div class="backup-actions" aria-label="Backup dos dados">
+            <button class="secondary-button" id="export-data" type="button">Exportar dados</button>
+            <button class="secondary-button" id="import-data" type="button">Importar dados</button>
+            <input class="is-hidden" id="import-file" type="file" accept="application/json,.json" />
+          </div>
+          <p class="backup-status" id="backup-status" role="status" aria-live="polite"></p>
         </div>
         <p class="date-label">Painel pessoal</p>
       </header>
