@@ -3,259 +3,234 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>LTracker</title>
+    <title>LTracker Gym</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <main class="app-shell">
       <header class="topbar">
         <div>
-          <p class="eyebrow">LTracker</p>
-          <h1>Hoje</h1>
+          <p class="eyebrow">LTracker Gym</p>
+          <h1>Ficha digital</h1>
           <p class="current-date" id="current-date"></p>
-          <p class="storage-note">Nesta versão, os dados ficam salvos neste navegador. Use exportar/importar para backup.</p>
-          <div class="backup-actions" aria-label="Backup dos dados">
-            <button class="secondary-button" id="export-data" type="button">Exportar dados</button>
-            <button class="secondary-button" id="import-data" type="button">Importar dados</button>
-            <input class="is-hidden" id="import-file" type="file" accept="application/json,.json" />
-          </div>
-          <p class="backup-status" id="backup-status" role="status" aria-live="polite"></p>
         </div>
-        <p class="date-label">Painel pessoal</p>
+        <p class="date-label">Academia local</p>
       </header>
 
-      <section class="today-grid" aria-label="Resumo de hoje">
-        <article class="card">
-          <div class="card-header">
-            <p class="card-kicker">Diario</p>
-            <h2>Registro diario</h2>
-          </div>
-          <form class="daily-form" id="daily-form">
-            <div class="form-grid">
-              <label>
-                Status do dia
-                <select id="dayStatus" name="dayStatus">
-                  <option value="active">Ativo</option>
-                  <option value="planned_rest">Descanso planejado</option>
-                  <option value="recovery">Recuperacao</option>
-                  <option value="sick">Doente</option>
-                </select>
-              </label>
+      <nav class="app-tabs" aria-label="Areas do LTracker Gym">
+        <button class="tab-button is-active" type="button" data-tab-target="tab-ficha">Ficha</button>
+        <button class="tab-button" type="button" data-tab-target="tab-historico">Historico</button>
+        <button class="tab-button" type="button" data-tab-target="tab-perfil">Perfil</button>
+      </nav>
 
-              <label>
-                Nota do status
-                <input id="statusNote" name="statusNote" type="text" placeholder="Ex: perna cansada" />
-              </label>
-
-              <label>
-                Peso
-                <input id="weight" name="weight" type="text" inputmode="decimal" placeholder="kg" />
-              </label>
-
-              <label>
-                Horas de sono
-                <input id="sleepHours" name="sleepHours" type="text" inputmode="decimal" placeholder="h ou h:min" />
-              </label>
-
-              <label>
-                Qualidade do sono
-                <select id="sleepQuality" name="sleepQuality">
-                  <option value="">1-5</option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
-                </select>
-              </label>
-
-              <label>
-                Disposicao
-                <select id="mood" name="mood">
-                  <option value="">1-5</option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
-                </select>
-              </label>
+      <section class="tab-panel" id="tab-ficha" aria-label="Ficha de treino">
+        <div class="today-grid gym-layout">
+          <article class="card card-wide gym-card" id="gym-card">
+            <div class="card-header">
+              <p class="card-kicker">Ficha de treino</p>
+              <h2 id="gym-card-title">Treino A</h2>
             </div>
 
-            <label>
-              Dores/desconfortos
-              <input id="soreness" name="soreness" type="text" placeholder="Ex: lombar leve, pernas ok" />
-            </label>
-
-            <label>
-              Observacoes rapidas
-              <textarea id="notes" name="notes" rows="3" placeholder="Algo importante sobre hoje"></textarea>
-            </label>
-
-            <button type="submit">Salvar resumo do dia</button>
-            <p class="form-note">Salva peso, sono, disposicao e observacoes gerais do dia.</p>
-          </form>
-        </article>
-
-        <article class="card">
-          <div class="card-header">
-            <p class="card-kicker">Treino</p>
-            <h2>Atividades</h2>
-          </div>
-          <p class="section-title">Registrar atividade</p>
-          <form class="activity-form" id="activity-form">
-            <div class="form-grid">
-              <label>
-                Tipo
-                <select id="activityType" name="activityType">
-                  <option value="Corrida">Corrida</option>
-                  <option value="Bike">Bike</option>
-                  <option value="Caminhada">Caminhada</option>
-                  <option value="Academia">Academia</option>
-                </select>
-              </label>
-
-              <label>
-                Duracao
-                <input id="activityDuration" name="activityDuration" type="text" inputmode="decimal" placeholder="min ou min:seg" />
-              </label>
-
-              <label>
-                Intensidade
-                <select id="activityIntensity" name="activityIntensity">
-                  <option value="">1-5</option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
-                </select>
-              </label>
-
-              <label class="distance-field">
-                Distancia
-                <input id="activityDistance" name="activityDistance" type="text" inputmode="decimal" placeholder="km" />
-              </label>
-
-              <label class="gym-field">
-                Treino
-                <select id="workoutPlan" name="workoutPlan">
-                  <option value="">A/B</option>
-                  <option value="A">A</option>
-                  <option value="B">B</option>
-                </select>
-              </label>
-
-              <label class="gym-field">
-                Sensacao
-                <select id="workoutFeeling" name="workoutFeeling">
-                  <option value="">1-5</option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
-                </select>
-              </label>
+            <div class="workout-tabs" aria-label="Treinos disponiveis">
+              <button class="workout-tab is-active" type="button" data-workout="A">A</button>
+              <button class="workout-tab" type="button" data-workout="B">B</button>
+              <button class="workout-tab is-muted" type="button" disabled>C futuro</button>
             </div>
+            <p class="workout-progress" id="workout-progress">0 de 0 exercicios concluidos</p>
 
-            <label>
-              Observacoes
-              <textarea id="activityNotes" name="activityNotes" rows="3" placeholder="Detalhe rapido da atividade"></textarea>
-            </label>
+            <form class="exercise-add-form is-hidden" id="exercise-add-form">
+              <label>
+                + Adicionar exercicio
+                <input id="newExerciseName" name="newExerciseName" type="text" placeholder="Nome do exercicio" />
+              </label>
+              <button type="submit">Adicionar</button>
+            </form>
 
-            <button type="submit">Adicionar atividade</button>
-          </form>
+            <div class="gym-workouts" id="gym-workouts" aria-live="polite">
+              <section class="gym-workout">
+                <h3 id="active-workout-heading">Treino A</h3>
+                <div class="gym-exercise-list" id="gym-workout-active"></div>
+              </section>
+            </div>
+          </article>
 
-          <button class="workout-toggle is-hidden" id="workout-toggle" type="button">
-            Ver ficha do treino
-          </button>
+          <article class="card">
+            <div class="card-header">
+              <p class="card-kicker">Hoje</p>
+              <h2>Execucao do treino</h2>
+            </div>
+            <p class="section-title">Treino selecionado</p>
+            <form class="activity-form" id="activity-form">
+              <div class="form-grid">
+                <input id="activityType" name="activityType" type="hidden" value="Academia" />
 
-          <div class="activity-list" id="activity-list" aria-live="polite"></div>
-        </article>
+                <label>
+                  Treino
+                  <select id="workoutPlan" name="workoutPlan">
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                  </select>
+                </label>
 
-        <article class="card card-wide gym-card is-hidden" id="gym-card">
-          <div class="card-header">
-            <p class="card-kicker">Ficha de treino</p>
-            <h2 id="gym-card-title">Treino A</h2>
-          </div>
-          <div class="template-actions">
-            <button class="secondary-button" id="template-edit-toggle" type="button">Modo editar ficha</button>
-          </div>
+                <label>
+                  Duracao
+                  <input id="activityDuration" name="activityDuration" type="text" inputmode="decimal" placeholder="min opcional" />
+                </label>
 
-          <form class="exercise-add-form is-hidden" id="exercise-add-form">
-            <label>
-              + Adicionar exercicio
-              <input id="newExerciseName" name="newExerciseName" type="text" placeholder="Nome do exercicio" />
-            </label>
-            <button type="submit">Adicionar</button>
-          </form>
+                <label class="is-hidden">
+                  Intensidade
+                  <select id="activityIntensity" name="activityIntensity">
+                    <option value="">1-5</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                  </select>
+                </label>
 
-          <div class="gym-workouts" id="gym-workouts" aria-live="polite">
-            <section class="gym-workout">
-              <h3>Treino A</h3>
-              <div class="gym-exercise-list" id="gym-workout-a"></div>
-            </section>
+                <label class="distance-field">
+                  Distancia
+                  <input id="activityDistance" name="activityDistance" type="text" inputmode="decimal" placeholder="km" />
+                </label>
 
-            <section class="gym-workout">
-              <h3>Treino B</h3>
-              <div class="gym-exercise-list" id="gym-workout-b"></div>
-            </section>
-          </div>
-        </article>
+                <label class="gym-field">
+                  Sensacao
+                  <select id="workoutFeeling" name="workoutFeeling">
+                    <option value="">1-5</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                  </select>
+                </label>
+              </div>
 
+              <label>
+                Observacoes
+                <textarea id="activityNotes" name="activityNotes" rows="3" placeholder="Ex: aumentou carga, sentiu desconforto, fez adaptacao"></textarea>
+              </label>
+
+              <button type="submit">Marcar treino feito</button>
+            </form>
+
+            <button class="workout-toggle" id="workout-toggle" type="button">
+              Ocultar ficha do treino
+            </button>
+          </article>
+
+          <article class="card status-card">
+            <div class="card-header">
+              <p class="card-kicker">Registro do dia</p>
+              <h2>Status rapido</h2>
+            </div>
+            <form class="daily-form" id="daily-form">
+              <div class="form-grid">
+                <label>
+                  Status do dia
+                  <select id="dayStatus" name="dayStatus">
+                    <option value="active">Treino feito</option>
+                    <option value="planned_rest">Descanso</option>
+                    <option value="recovery">Recuperacao</option>
+                    <option value="sick">Doente</option>
+                  </select>
+                </label>
+
+                <label>
+                  Observacao
+                  <input id="statusNote" name="statusNote" type="text" placeholder="Ex: descanso, gripe, dor no joelho" />
+                </label>
+
+                <input id="weight" name="weight" type="hidden" />
+                <input id="sleepHours" name="sleepHours" type="hidden" />
+                <input id="sleepQuality" name="sleepQuality" type="hidden" />
+                <input id="mood" name="mood" type="hidden" />
+                <input id="soreness" name="soreness" type="hidden" />
+              </div>
+
+              <label>
+                Observacoes do aluno
+                <textarea id="notes" name="notes" rows="3" placeholder="Observacao geral do dia"></textarea>
+              </label>
+
+              <button type="submit">Salvar status</button>
+            </form>
+          </article>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="tab-historico" aria-label="Historico simples" hidden>
         <article class="card card-wide">
           <div class="card-header">
-            <p class="card-kicker">Tendencia</p>
-            <h2>Resumo semanal</h2>
+            <p class="card-kicker">Historico</p>
+            <h2>Linha do tempo</h2>
           </div>
-          <div class="weekly-summary" id="weekly-summary">
+          <div class="history-summary" id="history-summary">
             <div class="metric">
-              <span class="metric-label">Corridas</span>
-              <strong id="weekly-runs">0</strong>
+              <span class="metric-label">Treinos feitos</span>
+              <strong id="history-workouts">0</strong>
             </div>
 
             <div class="metric">
-              <span class="metric-label">Academia</span>
-              <strong id="weekly-gym">0</strong>
+              <span class="metric-label">Ultimo treino</span>
+              <strong id="history-last-workout">-</strong>
             </div>
 
             <div class="metric">
-              <span class="metric-label">Dias ativos</span>
-              <strong id="weekly-active-days">0</strong>
+              <span class="metric-label">Sequencia recente</span>
+              <strong id="history-streak">0</strong>
             </div>
 
             <div class="metric">
-              <span class="metric-label">Descanso/recuperacao/doente</span>
-              <strong id="weekly-rest-days">0</strong>
-            </div>
-
-            <div class="metric">
-              <span class="metric-label">Km corrida</span>
-              <strong id="weekly-run-km">0</strong>
-            </div>
-
-            <div class="metric">
-              <span class="metric-label">Km bike</span>
-              <strong id="weekly-bike-km">0</strong>
-            </div>
-
-            <div class="metric">
-              <span class="metric-label">Km caminhada</span>
-              <strong id="weekly-walk-km">0</strong>
-            </div>
-
-            <div class="metric">
-              <span class="metric-label">Media sono</span>
-              <strong id="weekly-sleep">&mdash;</strong>
-            </div>
-
-            <div class="metric">
-              <span class="metric-label">Peso medio</span>
-              <strong id="weekly-weight">&mdash;</strong>
+              <span class="metric-label">Treino ativo</span>
+              <strong id="history-active-workout">A</strong>
             </div>
           </div>
+          <div class="history-advice" id="history-advice" aria-live="polite"></div>
+          <div class="timeline-list" id="timeline-list" aria-live="polite"></div>
         </article>
+      </section>
+
+      <section class="tab-panel" id="tab-perfil" aria-label="Perfil e configuracoes" hidden>
+        <div class="today-grid">
+          <article class="card student-card">
+            <div class="card-header">
+              <p class="card-kicker">Aluno atual</p>
+              <h2>Perfil local</h2>
+            </div>
+            <label>
+              Nome do aluno
+              <input id="student-name" name="studentName" type="text" placeholder="Nome temporario" />
+            </label>
+            <p class="form-note">Nome salvo no backup local desta versao inicial.</p>
+          </article>
+
+          <article class="card">
+            <div class="card-header">
+              <p class="card-kicker">Ficha</p>
+              <h2>Edicao</h2>
+            </div>
+            <div class="profile-actions">
+              <button class="secondary-button" id="template-edit-toggle" type="button">Modo editar ficha</button>
+            </div>
+            <p class="form-note">A edicao aparece na aba Ficha e continua simples para esta etapa.</p>
+          </article>
+
+          <article class="card card-wide">
+            <div class="card-header">
+              <p class="card-kicker">Dados</p>
+              <h2>Backup local</h2>
+            </div>
+            <p class="storage-note">Nesta versao, os dados ficam salvos neste navegador. Use exportar/importar para backup.</p>
+            <div class="backup-actions" aria-label="Backup dos dados">
+              <button class="secondary-button" id="export-data" type="button">Exportar dados</button>
+              <button class="secondary-button" id="import-data" type="button">Importar dados</button>
+              <input class="is-hidden" id="import-file" type="file" accept="application/json,.json" />
+            </div>
+            <p class="backup-status" id="backup-status" role="status" aria-live="polite"></p>
+          </article>
+        </div>
       </section>
     </main>
 

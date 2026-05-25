@@ -32,12 +32,16 @@ O LTracker Gym resolve primeiro o problema mais concreto: a ficha de treino do a
 
 O MVP deve entregar uma ficha de treino digital funcional:
 
+- Interface inicial com foco em LTracker Gym, nao no diario pessoal.
+- Navegacao simples por abas: Ficha como tela principal, Historico como apoio e Perfil como configuracao.
+- Area simples de aluno atual com nome temporario salvo localmente no mesmo backup de dados.
 - Treinos A/B/C ou nomes personalizados.
 - Exercicios em ordem dentro de cada treino.
+- Exercicios como itens de execucao, com conclusao individual e feedback visual discreto.
 - Foto opcional do aparelho ou exercicio.
 - Observacoes por exercicio.
 - Marcar treino como feito.
-- Historico simples de treinos realizados.
+- Historico simples em linha do tempo, com treino, descanso, doente e observacoes rapidas.
 - Status do dia como descanso, recuperacao ou doente.
 - Persistencia simples no navegador enquanto a arquitetura final nao for definida.
 - Exportacao/importacao de dados enquanto nao houver backend.
@@ -81,6 +85,7 @@ Na pratica:
 - Permitir treinos A/B/C e nomes personalizados.
 - Permitir exercicios ordenados.
 - Manter fotos e observacoes por exercicio.
+- Manter a ficha A/B editavel e recolhivel enquanto o Treino C fica apenas preparado visualmente.
 
 ### Fase 3 - Execucao do treino
 

@@ -1,5 +1,17 @@
 # ROADMAP
 
+## LTracker Gym - Branch `gym-edition`
+
+- Reposicionar a interface inicial como ficha de treino digital para academias locais.
+- Organizar a experiencia em abas simples: Ficha, Historico e Perfil.
+- Priorizar aluno atual, ficha A/B, exercicios em ordem, fotos, observacoes e acao de marcar treino feito.
+- Transformar exercicios da ficha em itens de execucao com conclusao individual e progresso simples.
+- Transformar Historico em linha do tempo de acompanhamento do aluno, sem metricas pessoais antigas.
+- Manter status simples: treino feito, descanso, recuperacao, doente e observacao.
+- Esconder da experiencia inicial os elementos pessoais do LTracker original, como sono, peso, corrida, bike e dashboard amplo.
+- Preparar espaco visual para futura ficha A/B/C sem implementar sistema complexo nesta etapa.
+- Continuar sem backend, Supabase ou gestao completa de academia no MVP.
+
 ## Milestone 1: Base visual
 
 - Estrutura inicial do projeto.

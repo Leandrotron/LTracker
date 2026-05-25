@@ -99,10 +99,12 @@ ltracker.data
 - `dayStatus` guarda o status neutro do dia: `active`, `planned_rest`, `recovery` ou `sick`.
 - `statusNote` guarda uma nota opcional sobre o status do dia.
 - `activities` guarda as atividades registradas no dia atual.
+- `completedExercises` guarda, por dia e por treino, os exercicios marcados como concluidos na execucao local do treino.
 - `duration` guarda minutos em decimal normalizado quando informado. Exemplo: `32:30` vira `32.5`.
 - Corrida, Bike e Caminhada usam `distance`, tambem normalizado com ponto decimal quando informado.
 - Academia usa `workoutPlan` e `workoutFeeling`.
 - `workoutTemplates` guarda os templates locais dos treinos A e B.
+- `gym.currentStudentName` guarda o nome temporario do aluno atual na branch `gym-edition`.
 - Cada template possui `title` e `groups`; nesta etapa, o app usa um grupo simples por treino.
 - A lista `groups[].exercises` guarda objetos de exercicio na ordem de execucao.
 - Cada exercicio de template usa `name`, `weight`, `notes` e `photo`.

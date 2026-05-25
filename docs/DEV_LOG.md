@@ -2,6 +2,27 @@
 
 ## 2026-05-25
 
+- Aba Historico da branch `gym-edition` foi reformulada como linha do tempo de acompanhamento do aluno.
+- Removidas da interface de Historico as metricas pessoais antigas, como km, sono e peso.
+- Adicionado resumo compacto com treinos concluidos, ultimo treino, sequencia recente e treino ativo.
+- Adicionada area simples de aviso/recomendacao local para revisao de ficha ou retorno ao treino.
+- Corrigida a renderizacao da ficha para usar um unico treino ativo (`activeWorkout`) por vez.
+- Removida a renderizacao simultanea dos containers A/B na ficha; agora apenas `workoutTemplates[activeWorkout]` e exibido.
+- Ficha da branch `gym-edition` passa a funcionar como fluxo de execucao, com exercicios interativos e conclusao individual.
+- Conclusao de exercicios do treino selecionado e salva no dia atual em `completedExercises` dentro de `ltracker.data`.
+- Itens de exercicio passam a destacar numero, nome, carga, chip muscular, indicacao de foto e estado concluido discreto.
+- Progresso do treino selecionado passa a mostrar quantos exercicios foram concluidos no dia.
+- Troca entre Treino A/B preserva o estado de execucao salvo localmente e mostra apenas o treino ativo.
+- Interface da branch `gym-edition` reorganizada em abas simples: Ficha, Historico e Perfil.
+- Aba Ficha concentra treino selecionado, exercicios, status simples e acao de marcar treino feito.
+- Aba Historico passa a guardar os ultimos registros e metricas simples ja existentes.
+- Aba Perfil concentra aluno atual, modo editar ficha, exportacao/importacao e espaco para configuracoes futuras.
+- Navegacao por abas usa apenas HTML, CSS e JavaScript puros, sem router ou framework.
+- Interface inicial da branch `gym-edition` passa a usar foco visual/textual de LTracker Gym.
+- Tela principal passa a priorizar ficha de treino digital, aluno atual, status do dia, marcar treino feito e historico simples.
+- Elementos pessoais do LTracker original, como sono, peso, corrida, bike e dashboard pessoal, foram removidos da interface inicial sem apagar a logica interna.
+- Ficha A/B segue editavel e recolhivel, com indicacao visual de espaco futuro para Treino C.
+- Adicionado nome temporario/editavel do aluno salvo localmente no navegador.
 - Criada a branch conceitual `gym-edition` para explorar o LTracker Gym separadamente do LTracker pessoal.
 - Adicionado `docs/GYM_PRODUCT_VISION.md` com a visao inicial do produto focado em fichas de treino digitais para academias locais.
 - Adicionados botoes "Exportar dados" e "Importar dados" para backup manual do conteudo salvo em `localStorage` na chave `ltracker.data`.

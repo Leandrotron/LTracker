@@ -2,31 +2,33 @@ const STORAGE_KEY = "ltracker.data";
 const dailyForm = document.querySelector("#daily-form");
 const activityForm = document.querySelector("#activity-form");
 const exerciseAddForm = document.querySelector("#exercise-add-form");
-const activityList = document.querySelector("#activity-list");
+const studentNameInput = document.querySelector("#student-name");
+const timelineList = document.querySelector("#timeline-list");
 const workoutToggle = document.querySelector("#workout-toggle");
 const gymCard = document.querySelector("#gym-card");
 const gymCardTitle = document.querySelector("#gym-card-title");
 const templateEditToggle = document.querySelector("#template-edit-toggle");
-const gymWorkoutA = document.querySelector("#gym-workout-a");
-const gymWorkoutB = document.querySelector("#gym-workout-b");
+const gymWorkoutActive = document.querySelector("#gym-workout-active");
+const activeWorkoutHeading = document.querySelector("#active-workout-heading");
+const workoutTabs = document.querySelectorAll(".workout-tab");
+const workoutProgress = document.querySelector("#workout-progress");
 const currentDate = document.querySelector("#current-date");
 const distanceField = document.querySelector(".distance-field");
 const gymFields = document.querySelectorAll(".gym-field");
-const weeklyRuns = document.querySelector("#weekly-runs");
-const weeklyGym = document.querySelector("#weekly-gym");
-const weeklyActiveDays = document.querySelector("#weekly-active-days");
-const weeklyRestDays = document.querySelector("#weekly-rest-days");
-const weeklyRunKm = document.querySelector("#weekly-run-km");
-const weeklyBikeKm = document.querySelector("#weekly-bike-km");
-const weeklyWalkKm = document.querySelector("#weekly-walk-km");
-const weeklySleep = document.querySelector("#weekly-sleep");
-const weeklyWeight = document.querySelector("#weekly-weight");
+const historyWorkouts = document.querySelector("#history-workouts");
+const historyLastWorkout = document.querySelector("#history-last-workout");
+const historyStreak = document.querySelector("#history-streak");
+const historyActiveWorkout = document.querySelector("#history-active-workout");
+const historyAdvice = document.querySelector("#history-advice");
 const exportDataButton = document.querySelector("#export-data");
 const importDataButton = document.querySelector("#import-data");
 const importFileInput = document.querySelector("#import-file");
 const backupStatus = document.querySelector("#backup-status");
-let isWorkoutCardOpen = false;
+const tabButtons = document.querySelectorAll(".tab-button");
+const tabPanels = document.querySelectorAll(".tab-panel");
+let isWorkoutCardOpen = true;
 let isTemplateEditMode = false;
+let activeWorkout = "A";
 const openExercisePhotos = new Set();
 const EXERCISE_NAME_ALIASES = {
   "Elevacao lateral": "Elevação lateral",
@@ -184,6 +186,19 @@ function setBackupStatus(message) {
   backupStatus.textContent = message;
 }
 
+function showTab(targetId) {
+  tabButtons.forEach((button) => {
+    const isActive = button.dataset.tabTarget === targetId;
+
+    button.classList.toggle("is-active", isActive);
+    button.setAttribute("aria-selected", String(isActive));
+  });
+
+  tabPanels.forEach((panel) => {
+    panel.hidden = panel.id !== targetId;
+  });
+}
+
 function getBackupFileName() {
   return `ltracker-backup-${getTodayKey()}.json`;
 }
@@ -208,6 +223,7 @@ function renderAppFromStorage() {
   const data = loadData();
 
   fillDailyForm(getTodayData(data));
+  renderStudentProfile();
   saveData(data);
   renderActivities();
   renderGymExercises();
@@ -590,6 +606,7 @@ function setupDailyForm() {
     };
 
     saveData(currentData);
+    renderActivities();
     renderWeeklySummary();
   });
 }
@@ -611,66 +628,203 @@ function updateActivityFields() {
   updateWorkoutCard();
 }
 
+function renderStudentProfile() {
+  const data = loadData();
+
+  studentNameInput.value = data.gym?.currentStudentName || "";
+}
+
+function setupStudentProfile() {
+  renderStudentProfile();
+  studentNameInput.addEventListener("input", () => {
+    const data = loadData();
+
+    data.gym = {
+      ...(isPlainObject(data.gym) ? data.gym : {}),
+      currentStudentName: studentNameInput.value.trim(),
+    };
+    saveData(data);
+  });
+}
+
+function formatHistoryDate(dayKey) {
+  const [year, month, day] = String(dayKey).split("-");
+
+  if (!year || !month || !day) {
+    return dayKey;
+  }
+
+  return `${day}/${month}`;
+}
+
+function getDayStatusLabel(status) {
+  const labels = {
+    active: "Treino feito",
+    planned_rest: "Descanso",
+    recovery: "Recuperacao",
+    sick: "Doente",
+  };
+
+  return labels[status] || "Status";
+}
+
+function getDayStatusIcon(status) {
+  const icons = {
+    active: "\u2713",
+    planned_rest: "Descanso",
+    recovery: "Recuperacao",
+    sick: "Doente",
+  };
+
+  return icons[status] || "\u2022";
+}
+
+function getDaysSince(dayKey) {
+  const [year, month, day] = String(dayKey).split("-").map(Number);
+
+  if (!year || !month || !day) {
+    return null;
+  }
+
+  const today = new Date();
+  const date = new Date(year, month - 1, day);
+
+  today.setHours(0, 0, 0, 0);
+  date.setHours(0, 0, 0, 0);
+
+  return Math.max(0, Math.round((today - date) / 86400000));
+}
+
+function getRecentWorkoutStreak(days) {
+  let streak = 0;
+
+  for (const [, dayData] of days) {
+    const hasGymWorkout = (dayData.activities || []).some((activity) => activity.type === "Academia");
+
+    if (!hasGymWorkout) {
+      break;
+    }
+
+    streak += 1;
+  }
+
+  return streak;
+}
+
+function getHistoryAdvice(totalWorkouts, lastWorkoutDay) {
+  const daysSinceLastWorkout = lastWorkoutDay ? getDaysSince(lastWorkoutDay) : null;
+
+  if (daysSinceLastWorkout !== null && daysSinceLastWorkout >= 5) {
+    return `Ultimo treino ha ${daysSinceLastWorkout} dias. Vale retomar com calma.`;
+  }
+
+  if (totalWorkouts > 0 && totalWorkouts % 40 === 0) {
+    return "Trocar treino apos 40 execucoes: hora de revisar a ficha.";
+  }
+
+  if (totalWorkouts > 0 && totalWorkouts % 12 === 0) {
+    return "Hora de revisar cargas e observacoes da ficha.";
+  }
+
+  return "Acompanhe a continuidade do aluno pela linha do tempo.";
+}
+
+function setupTabs() {
+  tabButtons.forEach((button) => {
+    button.setAttribute("aria-selected", button.classList.contains("is-active") ? "true" : "false");
+    button.addEventListener("click", () => {
+      showTab(button.dataset.tabTarget);
+    });
+  });
+}
+
 function renderActivities() {
   const data = loadData();
-  const todayData = getTodayData(data);
+  const days = Object.entries(data.days).sort(([firstDate], [secondDate]) =>
+    secondDate.localeCompare(firstDate),
+  );
+  const entries = [];
+  let totalWorkouts = 0;
+  let lastWorkoutLabel = "-";
+  let lastWorkoutDay = "";
 
-  activityList.innerHTML = "";
+  timelineList.innerHTML = "";
 
-  if (todayData.activities.length === 0) {
-    activityList.innerHTML = '<p class="activity-empty">Nenhuma atividade registrada hoje.</p>';
+  days.forEach(([dayKey, dayData]) => {
+    const dayStatus = dayData.dayStatus || "active";
+    const dayNotes = [dayData.statusNote, dayData.notes].filter(Boolean).join(" | ");
+    const gymActivities = (dayData.activities || []).filter((activity) => activity.type === "Academia");
+
+    if (gymActivities.length > 0) {
+      gymActivities.forEach((activity) => {
+        totalWorkouts += 1;
+
+        if (!lastWorkoutDay) {
+          lastWorkoutDay = dayKey;
+          lastWorkoutLabel = activity.workoutPlan ? `Treino ${activity.workoutPlan}` : "Treino";
+        }
+
+        entries.push({
+          date: formatHistoryDate(dayKey),
+          icon: "\u2713",
+          title: activity.workoutPlan ? `Treino ${activity.workoutPlan}` : "Treino feito",
+          notes: [activity.notes, dayNotes].filter(Boolean).join(" | "),
+        });
+      });
+      return;
+    }
+
+    if (dayStatus !== "active" || dayNotes) {
+      entries.push({
+        date: formatHistoryDate(dayKey),
+        icon: getDayStatusIcon(dayStatus),
+        title: getDayStatusLabel(dayStatus),
+        notes: dayNotes,
+      });
+    }
+  });
+
+  historyWorkouts.textContent = totalWorkouts;
+  historyLastWorkout.textContent = lastWorkoutLabel;
+  historyStreak.textContent = getRecentWorkoutStreak(days);
+  historyActiveWorkout.textContent = activeWorkout;
+  historyAdvice.textContent = getHistoryAdvice(totalWorkouts, lastWorkoutDay);
+
+  if (entries.length === 0) {
+    timelineList.innerHTML = '<p class="activity-empty">Nenhum registro encontrado.</p>';
     return;
   }
 
-  todayData.activities.forEach((activity) => {
+  entries.slice(0, 10).forEach((entry) => {
     const item = document.createElement("div");
+    const date = document.createElement("span");
+    const icon = document.createElement("span");
+    const content = document.createElement("div");
     const title = document.createElement("p");
-    const type = document.createElement("span");
-    const meta = document.createElement("p");
-    const details = [];
 
-    const duration = getDurationMinutes(activity.duration);
-    const distance = getNumber(activity.distance);
+    item.className = "timeline-item";
+    date.className = "timeline-date";
+    date.textContent = entry.date;
+    icon.className = "timeline-icon";
+    icon.textContent = entry.icon;
+    content.className = "timeline-content";
+    title.className = "timeline-title";
+    title.textContent = entry.title;
 
-    if (duration > 0) {
-      details.push(formatDuration(duration));
-    }
+    content.appendChild(title);
 
-    if (activity.intensity) {
-      details.push(`intensidade ${activity.intensity}/5`);
-    }
-
-    if (distance > 0) {
-      details.push(`${formatDecimal(distance)} km`);
-    }
-
-    if (activity.workoutPlan) {
-      details.push(`treino ${activity.workoutPlan}`);
-    }
-
-    if (activity.workoutFeeling) {
-      details.push(`sensacao ${activity.workoutFeeling}/5`);
-    }
-
-    item.className = "activity-item";
-    title.className = "activity-title";
-    type.textContent = activity.type;
-    meta.className = "activity-meta";
-    meta.textContent = details.join(" | ") || "Sem detalhes";
-
-    title.appendChild(type);
-    item.appendChild(title);
-    item.appendChild(meta);
-
-    if (activity.notes) {
+    if (entry.notes) {
       const notes = document.createElement("p");
 
-      notes.className = "activity-notes";
-      notes.textContent = activity.notes;
-      item.appendChild(notes);
+      notes.className = "timeline-notes";
+      notes.textContent = entry.notes;
+      content.appendChild(notes);
     }
 
-    activityList.appendChild(item);
+    item.appendChild(date);
+    item.appendChild(icon);
+    item.appendChild(content);
+    timelineList.appendChild(item);
   });
 }
 
@@ -679,7 +833,11 @@ function setupActivityForm() {
   renderActivities();
 
   activityForm.activityType.addEventListener("change", updateActivityFields);
-  activityForm.workoutPlan.addEventListener("change", updateWorkoutCard);
+  activityForm.workoutPlan.addEventListener("change", () => {
+    activeWorkout = activityForm.workoutPlan.value || "A";
+    updateWorkoutCard();
+    renderGymExercises();
+  });
   workoutToggle.addEventListener("click", () => {
     isWorkoutCardOpen = !isWorkoutCardOpen;
     updateWorkoutCard();
@@ -706,10 +864,16 @@ function setupActivityForm() {
       activity.distance = normalizeDecimalInput(activityForm.activityDistance.value);
     }
 
+    todayData.dayStatus = "active";
     todayData.activities.push(activity);
     saveData(data);
+    fillDailyForm(todayData);
     activityForm.reset();
+    activityForm.activityType.value = "Academia";
+    activityForm.workoutPlan.value = activity.workoutPlan || "A";
+    activeWorkout = activityForm.workoutPlan.value || "A";
     updateActivityFields();
+    renderGymExercises();
     renderActivities();
     renderWeeklySummary();
   });
@@ -717,9 +881,59 @@ function setupActivityForm() {
 
 function getSelectedWorkoutTemplate(data) {
   const templates = ensureWorkoutTemplates(data);
-  const selectedWorkout = activityForm.workoutPlan.value || "A";
 
-  return templates[selectedWorkout];
+  return templates[activeWorkout];
+}
+
+function getExerciseCompletionKey(exercise) {
+  return `${exercise.index}-${exercise.name}`;
+}
+
+function getCompletedExercises(dayData, workout) {
+  if (!dayData.completedExercises) {
+    dayData.completedExercises = {};
+  }
+
+  if (!Array.isArray(dayData.completedExercises[workout])) {
+    dayData.completedExercises[workout] = [];
+  }
+
+  return new Set(dayData.completedExercises[workout]);
+}
+
+function saveCompletedExercises(dayData, workout, completedExercises) {
+  if (!dayData.completedExercises) {
+    dayData.completedExercises = {};
+  }
+
+  dayData.completedExercises[workout] = Array.from(completedExercises);
+}
+
+function toggleExerciseCompletion(workout, exercise) {
+  const data = loadData();
+  const todayData = getTodayData(data);
+  const completedExercises = getCompletedExercises(todayData, workout);
+  const completionKey = getExerciseCompletionKey(exercise);
+
+  if (completedExercises.has(completionKey)) {
+    completedExercises.delete(completionKey);
+  } else {
+    completedExercises.add(completionKey);
+  }
+
+  saveCompletedExercises(todayData, workout, completedExercises);
+  saveData(data);
+  renderGymExercises();
+}
+
+function renderWorkoutProgress(workout, exercises, completedExercises) {
+  const completedCount = exercises.filter((exercise) =>
+    completedExercises.has(getExerciseCompletionKey(exercise)),
+  ).length;
+  const totalCount = exercises.length;
+
+  workoutProgress.textContent = `${completedCount} de ${totalCount} exercicios concluidos`;
+  workoutProgress.classList.toggle("is-complete", totalCount > 0 && completedCount === totalCount);
 }
 
 function saveWorkoutTemplates(data, templates) {
@@ -728,6 +942,10 @@ function saveWorkoutTemplates(data, templates) {
 }
 
 function renderGymExerciseList(container, exercises, workout) {
+  const data = loadData();
+  const todayData = getTodayData(data);
+  const completedExercises = getCompletedExercises(todayData, workout);
+
   container.innerHTML = "";
 
   if (exercises.length === 0) {
@@ -740,15 +958,25 @@ function renderGymExerciseList(container, exercises, workout) {
     const content = document.createElement("div");
     const title = document.createElement("p");
     const photoKey = `${workout}-${exercise.index}`;
+    const completionKey = getExerciseCompletionKey(exercise);
+    const isCompleted = completedExercises.has(completionKey);
 
-    item.className = "gym-exercise-item";
+    item.className = `gym-exercise-item ${isCompleted ? "is-completed" : ""}`.trim();
+    item.classList.toggle("is-editing", isTemplateEditMode);
     content.className = "gym-exercise-content";
     title.className = "activity-title";
 
     const exerciseName = document.createElement("span");
+    const exerciseMain = document.createElement("span");
+    const exerciseNumber = document.createElement("span");
 
-    exerciseName.textContent = `${exercise.index + 1} - ${exercise.name}`;
-    title.appendChild(exerciseName);
+    exerciseNumber.className = "exercise-number";
+    exerciseNumber.textContent = String(exercise.index + 1).padStart(2, "0");
+    exerciseName.textContent = exercise.name;
+    exerciseMain.className = "exercise-main";
+    exerciseMain.appendChild(exerciseNumber);
+    exerciseMain.appendChild(exerciseName);
+    title.appendChild(exerciseMain);
 
     if (exercise.muscleGroup) {
       const badge = document.createElement("span");
@@ -757,6 +985,14 @@ function renderGymExerciseList(container, exercises, workout) {
       badge.className = `muscle-badge ${muscleGroupClass}`.trim();
       badge.textContent = exercise.muscleGroup;
       title.appendChild(badge);
+    }
+
+    if (exercise.photo && !isTemplateEditMode) {
+      const photoChip = document.createElement("span");
+
+      photoChip.className = "photo-chip";
+      photoChip.textContent = "\u{1f4f7}";
+      title.appendChild(photoChip);
     }
 
     content.appendChild(title);
@@ -865,6 +1101,22 @@ function renderGymExerciseList(container, exercises, workout) {
       content.appendChild(editForm);
     }
 
+    if (!isTemplateEditMode) {
+      const completeButton = document.createElement("button");
+
+      completeButton.className = "exercise-complete";
+      completeButton.type = "button";
+      completeButton.setAttribute(
+        "aria-label",
+        isCompleted ? `Marcar ${exercise.name} como pendente` : `Concluir ${exercise.name}`,
+      );
+      completeButton.textContent = isCompleted ? "\u2713" : "";
+      completeButton.addEventListener("click", () => {
+        toggleExerciseCompletion(workout, exercise);
+      });
+      item.appendChild(completeButton);
+    }
+
     item.appendChild(content);
 
     if (exercise.photo && !isTemplateEditMode) {
@@ -924,19 +1176,15 @@ function renderGymExerciseList(container, exercises, workout) {
 function renderGymExercises() {
   const data = loadData();
   const templates = ensureWorkoutTemplates(data);
+  const selectedExercises = templates[activeWorkout].groups[0].exercises.map((exercise, index) => ({
+    ...exercise,
+    index,
+  }));
+  const completedExercises = getCompletedExercises(getTodayData(data), activeWorkout);
 
   saveData(data);
-
-  renderGymExerciseList(
-    gymWorkoutA,
-    templates.A.groups[0].exercises.map((exercise, index) => ({ ...exercise, index })),
-    "A",
-  );
-  renderGymExerciseList(
-    gymWorkoutB,
-    templates.B.groups[0].exercises.map((exercise, index) => ({ ...exercise, index })),
-    "B",
-  );
+  renderWorkoutProgress(activeWorkout, selectedExercises, completedExercises);
+  renderGymExerciseList(gymWorkoutActive, selectedExercises, activeWorkout);
 }
 
 function updateTemplateExercise(workout, index, updates) {
@@ -991,7 +1239,6 @@ function addTemplateExercise(workout, exerciseName) {
 
 function updateWorkoutCard() {
   const isGym = activityForm.activityType.value === "Academia";
-  const selectedWorkout = activityForm.workoutPlan.value || "A";
   const data = loadData();
   const selectedTemplate = getSelectedWorkoutTemplate(data);
   const shouldShowCard = isGym && isWorkoutCardOpen;
@@ -1000,9 +1247,11 @@ function updateWorkoutCard() {
   gymCard.classList.toggle("is-hidden", !shouldShowCard);
   exerciseAddForm.classList.toggle("is-hidden", !shouldShowCard || !isTemplateEditMode);
   templateEditToggle.textContent = isTemplateEditMode ? "Sair do modo editar" : "Modo editar ficha";
-  gymCardTitle.textContent = selectedTemplate.title || `Treino ${selectedWorkout}`;
-  gymWorkoutA.closest(".gym-workout").classList.toggle("is-hidden", selectedWorkout !== "A");
-  gymWorkoutB.closest(".gym-workout").classList.toggle("is-hidden", selectedWorkout !== "B");
+  gymCardTitle.textContent = selectedTemplate.title || `Treino ${activeWorkout}`;
+  activeWorkoutHeading.textContent = `Treino ${activeWorkout}`;
+  workoutTabs.forEach((tab) => {
+    tab.classList.toggle("is-active", tab.dataset.workout === activeWorkout);
+  });
 }
 
 function setupGymForm() {
@@ -1012,6 +1261,19 @@ function setupGymForm() {
   saveData(data);
   renderGymExercises();
   updateWorkoutCard();
+
+  workoutTabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      if (!tab.dataset.workout) {
+        return;
+      }
+
+      activeWorkout = tab.dataset.workout;
+      activityForm.workoutPlan.value = activeWorkout;
+      updateWorkoutCard();
+      renderGymExercises();
+    });
+  });
 
   templateEditToggle.addEventListener("click", () => {
     isTemplateEditMode = !isTemplateEditMode;
@@ -1028,7 +1290,7 @@ function setupGymForm() {
       return;
     }
 
-    addTemplateExercise(activityForm.workoutPlan.value || "A", exerciseName);
+    addTemplateExercise(activeWorkout, exerciseName);
     exerciseAddForm.reset();
   });
 }
@@ -1044,80 +1306,12 @@ function setupBackupActions() {
 }
 
 function renderWeeklySummary() {
-  const data = loadData();
-  const weekKeys = getCurrentWeekKeys();
-  const sleepValues = [];
-  const weightValues = [];
-  let runCount = 0;
-  let gymCount = 0;
-  let activeDays = 0;
-  let restDays = 0;
-  let runKm = 0;
-  let bikeKm = 0;
-  let walkKm = 0;
-
-  weekKeys.forEach((dayKey) => {
-    const dayData = data.days[dayKey];
-
-    if (!dayData) {
-      return;
-    }
-
-    const sleepHours = getSleepHours(dayData.sleepHours);
-    const weight = getNumber(dayData.weight);
-    const dayStatus = dayData.dayStatus || "active";
-
-    if (dayStatus === "active") {
-      activeDays += 1;
-    } else {
-      restDays += 1;
-    }
-
-    if (sleepHours > 0) {
-      sleepValues.push(sleepHours);
-    }
-
-    if (weight > 0) {
-      weightValues.push(weight);
-    }
-
-    (dayData.activities || []).forEach((activity) => {
-      const type = String(activity.type || "").toLowerCase();
-
-      if (type === "corrida") {
-        runCount += 1;
-        runKm += getNumber(activity.distance);
-      }
-
-      if (type === "bike") {
-        bikeKm += getNumber(activity.distance);
-      }
-
-      if (type === "caminhada") {
-        walkKm += getNumber(activity.distance);
-      }
-
-      if (type === "academia") {
-        gymCount += 1;
-      }
-    });
-  });
-
-  const sleepAverage = getAverage(sleepValues);
-  const weightAverage = getAverage(weightValues);
-
-  weeklyRuns.textContent = runCount;
-  weeklyGym.textContent = gymCount;
-  weeklyActiveDays.textContent = activeDays;
-  weeklyRestDays.textContent = restDays;
-  weeklyRunKm.textContent = runKm ? `${formatDecimal(runKm)} km` : "0";
-  weeklyBikeKm.textContent = bikeKm ? `${formatDecimal(bikeKm)} km` : "0";
-  weeklyWalkKm.textContent = walkKm ? `${formatDecimal(walkKm)} km` : "0";
-  weeklySleep.textContent = sleepAverage ? formatSleepHours(sleepAverage) : "\u2014";
-  weeklyWeight.textContent = weightAverage ? `${weightAverage.toFixed(2)} kg` : "\u2014";
+  renderActivities();
 }
 
+setupTabs();
 setupBackupActions();
+setupStudentProfile();
 setupDailyForm();
 setupActivityForm();
 setupGymForm();
