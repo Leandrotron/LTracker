@@ -646,7 +646,7 @@ button:hover {
 
 .timeline-item {
   display: grid;
-  grid-template-columns: 64px 34px minmax(0, 1fr);
+  grid-template-columns: 64px minmax(0, 1fr);
   gap: 10px;
   padding: 14px 0;
   border-bottom: 1px solid var(--border);
@@ -673,6 +673,22 @@ button:hover {
 }
 
 .timeline-content {
+  min-width: 0;
+}
+
+.timeline-entry {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 10px;
+}
+
+.timeline-entry + .timeline-entry {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(244, 246, 248, 0.08);
+}
+
+.timeline-entry-content {
   min-width: 0;
 }
 

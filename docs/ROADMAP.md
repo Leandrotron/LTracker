@@ -9,7 +9,7 @@
 - Priorizar aluno atual, ficha A/B/C, exercicios em ordem, fotos, observacoes e acao de marcar treino feito.
 - Transformar exercicios da ficha em itens de execucao com conclusao individual e progresso simples.
 - Transformar Historico em linha do tempo de acompanhamento do aluno, sem metricas pessoais antigas.
-- Manter registro simples do dia com multiplas entradas: treino, caminhada, corrida, bike, descanso, doente, outro e observacao.
+- Manter registro simples por data com multiplas entradas: treino, caminhada, corrida, bike, descanso, doente, outro e observacao.
 - Esconder da experiencia inicial os elementos pessoais do LTracker original, como sono, peso e dashboard amplo.
 - Permitir cardio simples como registro complementar do dia, sem transformar a experiencia em painel de metricas.
 - Continuar sem backend, Supabase ou gestao completa de academia no MVP.
@@ -30,7 +30,8 @@
 ## Milestone 3: Atividades
 
 - Cadastro rapido de atividade.
-- Historico em timeline para todas as entradas do dia.
+- Campo Data no registro para adicionar ou corrigir atividades de dias anteriores.
+- Historico em timeline agrupada por data, mostrando todas as entradas de cada dia.
 - Tipos atuais: Treino, Caminhada, Corrida, Bike, Descanso, Doente e Outro.
 - Campos simples para cardio: duracao, distancia opcional, intensidade opcional e observacao.
 - Edicao e remocao simples de registros incorretos.

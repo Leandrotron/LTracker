@@ -2,6 +2,11 @@
 
 ## 2026-05-29
 
+- Formulario de registro passa a ter campo Data editavel, preenchido por padrao com hoje.
+- Salvamento de atividades deixa de depender apenas do dia atual e usa a data selecionada para gravar em `days[YYYY-MM-DD].entries`.
+- Timeline do Historico passa a agrupar registros por data, exibindo todos os itens daquele dia sob a mesma data.
+- Edicao de registro permite alterar tambem a data, movendo a entrada entre dias quando necessario.
+- Conclusao de exercicios da ficha passa a respeitar a data selecionada no formulario.
 - Registro diario evoluido para `entries`, permitindo multiplos registros no mesmo dia.
 - O formulario principal agora adiciona novas entradas sem sobrescrever caminhada, corrida, bike, treino, descanso, doente ou outro ja salvos no dia.
 - Historico passa a exibir todas as entradas de cada dia em timeline, com acoes simples de editar e remover.

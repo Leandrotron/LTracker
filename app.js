@@ -807,10 +807,12 @@ function ensureDayEntries(dayData) {
 }
 
 function getTodayData(data) {
-  const todayKey = getTodayKey();
+  return getDayData(data, getTodayKey());
+}
 
-  if (!data.days[todayKey]) {
-    data.days[todayKey] = {
+function getDayData(data, dayKey) {
+  if (!data.days[dayKey]) {
+    data.days[dayKey] = {
       dayStatus: "active",
       statusNote: "",
       weight: "",
@@ -823,9 +825,19 @@ function getTodayData(data) {
     };
   }
 
-  ensureDayEntries(data.days[todayKey]);
+  ensureDayEntries(data.days[dayKey]);
 
-  return data.days[todayKey];
+  return data.days[dayKey];
+}
+
+function getDayDataForRead(data, dayKey) {
+  if (!data.days[dayKey]) {
+    return { entries: [] };
+  }
+
+  ensureDayEntries(data.days[dayKey]);
+
+  return data.days[dayKey];
 }
 
 function fillDailyForm(dayData) {
@@ -1711,12 +1723,12 @@ function getDayStatusIcon(status) {
 
 function getActivityIcon(type) {
   const icons = {
-    gym: "\u2713",
-    walk: "Cam",
-    run: "Run",
-    bike: "Bike",
-    rest: "Desc",
-    sick: "Doe",
+    gym: "\u{1f4aa}",
+    walk: "\u{1f6b6}",
+    run: "\u{1f3c3}",
+    bike: "\u{1f6b4}",
+    rest: "\u{1f634}",
+    sick: "\u{1f912}",
     other: "+",
   };
 
@@ -1856,6 +1868,10 @@ function createEntryFromActivityForm(existingEntry = {}) {
   return entry;
 }
 
+function getActivityFormDateKey() {
+  return activityForm?.activityDate?.value || getTodayKey();
+}
+
 function getEntryById(dayData, entryId) {
   return ensureDayEntries(dayData).find((entry) => entry.id === entryId);
 }
@@ -1890,8 +1906,9 @@ function getEditableGymEntry(dayData, workout) {
   return entry;
 }
 
-function resetActivityForm(defaultWorkout = activeWorkout) {
+function resetActivityForm(defaultWorkout = activeWorkout, defaultDate = getTodayKey()) {
   activityForm.reset();
+  activityForm.activityDate.value = defaultDate || getTodayKey();
   activityForm.activityType.value = "gym";
   activityForm.workoutPlan.value = defaultWorkout || "A";
   activeWorkout = activityForm.workoutPlan.value || "A";
@@ -1899,7 +1916,8 @@ function resetActivityForm(defaultWorkout = activeWorkout) {
   updateActivityFields();
 }
 
-function fillActivityFormFromEntry(entry) {
+function fillActivityFormFromEntry(entry, dayKey) {
+  activityForm.activityDate.value = dayKey || getTodayKey();
   activityForm.activityType.value = entry.type;
   activityForm.activityDuration.value = entry.duration || "";
   activityForm.activityDistance.value = entry.distance || "";
@@ -1927,7 +1945,7 @@ function startEditingEntry(dayKey, entryId) {
   }
 
   editingEntry = { dayKey, entryId };
-  fillActivityFormFromEntry(entry);
+  fillActivityFormFromEntry(entry, dayKey);
 
   if (activitySubmitButton) {
     activitySubmitButton.textContent = "Salvar alteracoes";
@@ -1965,7 +1983,7 @@ function renderActivities() {
   const days = Object.entries(data.days).sort(([firstDate], [secondDate]) =>
     secondDate.localeCompare(firstDate),
   );
-  const entries = [];
+  const dayGroups = [];
   let totalWorkouts = 0;
   let lastWorkoutLabel = "-";
   let lastWorkoutDay = "";
@@ -1974,6 +1992,7 @@ function renderActivities() {
 
   days.forEach(([dayKey, dayData]) => {
     const entriesForDay = ensureDayEntries(dayData);
+    const dayEntries = [];
 
     entriesForDay.forEach((entry) => {
       if (entry.type === "gym") {
@@ -1985,15 +2004,21 @@ function renderActivities() {
         }
       }
 
-      entries.push({
+      dayEntries.push({
         dayKey,
         id: entry.id,
-        date: formatHistoryDate(dayKey),
         icon: getActivityIcon(entry.type),
         title: getActivityTitle(entry),
         notes: getActivityNotes(entry),
       });
     });
+
+    if (dayEntries.length > 0) {
+      dayGroups.push({
+        date: formatHistoryDate(dayKey),
+        entries: dayEntries,
+      });
+    }
   });
 
   historyWorkouts.textContent = totalWorkouts;
@@ -2002,55 +2027,65 @@ function renderActivities() {
   historyActiveWorkout.textContent = activeWorkout;
   historyAdvice.textContent = getHistoryAdvice(totalWorkouts, lastWorkoutDay);
 
-  if (entries.length === 0) {
+  if (dayGroups.length === 0) {
     timelineList.innerHTML = '<p class="activity-empty">Nenhum registro encontrado.</p>';
     return;
   }
 
-  entries.forEach((entry) => {
+  dayGroups.forEach((group) => {
     const item = document.createElement("div");
     const date = document.createElement("span");
-    const icon = document.createElement("span");
     const content = document.createElement("div");
-    const title = document.createElement("p");
-    const actions = document.createElement("div");
-    const editButton = document.createElement("button");
-    const removeButton = document.createElement("button");
 
-    item.className = "timeline-item";
+    item.className = "timeline-item timeline-day";
     date.className = "timeline-date";
-    date.textContent = entry.date;
-    icon.className = "timeline-icon";
-    icon.textContent = entry.icon;
+    date.textContent = group.date;
     content.className = "timeline-content";
-    title.className = "timeline-title";
-    title.textContent = entry.title;
-    actions.className = "timeline-actions";
-    editButton.type = "button";
-    editButton.className = "timeline-action";
-    editButton.textContent = "Editar";
-    editButton.addEventListener("click", () => startEditingEntry(entry.dayKey, entry.id));
-    removeButton.type = "button";
-    removeButton.className = "timeline-action";
-    removeButton.textContent = "Remover";
-    removeButton.addEventListener("click", () => removeEntry(entry.dayKey, entry.id));
 
-    content.appendChild(title);
+    group.entries.forEach((entry) => {
+      const row = document.createElement("div");
+      const icon = document.createElement("span");
+      const entryContent = document.createElement("div");
+      const title = document.createElement("p");
+      const actions = document.createElement("div");
+      const editButton = document.createElement("button");
+      const removeButton = document.createElement("button");
 
-    if (entry.notes) {
-      const notes = document.createElement("p");
+      row.className = "timeline-entry";
+      icon.className = "timeline-icon";
+      icon.textContent = entry.icon;
+      entryContent.className = "timeline-entry-content";
+      title.className = "timeline-title";
+      title.textContent = entry.title;
+      actions.className = "timeline-actions";
+      editButton.type = "button";
+      editButton.className = "timeline-action";
+      editButton.textContent = "Editar";
+      editButton.addEventListener("click", () => startEditingEntry(entry.dayKey, entry.id));
+      removeButton.type = "button";
+      removeButton.className = "timeline-action";
+      removeButton.textContent = "Excluir";
+      removeButton.addEventListener("click", () => removeEntry(entry.dayKey, entry.id));
 
-      notes.className = "timeline-notes";
-      notes.textContent = entry.notes;
-      content.appendChild(notes);
-    }
+      entryContent.appendChild(title);
 
-    actions.appendChild(editButton);
-    actions.appendChild(removeButton);
-    content.appendChild(actions);
+      if (entry.notes) {
+        const notes = document.createElement("p");
+
+        notes.className = "timeline-notes";
+        notes.textContent = entry.notes;
+        entryContent.appendChild(notes);
+      }
+
+      actions.appendChild(editButton);
+      actions.appendChild(removeButton);
+      entryContent.appendChild(actions);
+      row.appendChild(icon);
+      row.appendChild(entryContent);
+      content.appendChild(row);
+    });
 
     item.appendChild(date);
-    item.appendChild(icon);
     item.appendChild(content);
     timelineList.appendChild(item);
   });
@@ -2061,6 +2096,7 @@ function setupActivityForm() {
     return;
   }
 
+  activityForm.activityDate.value = getTodayKey();
   updateActivityFields();
   renderActivities();
 
@@ -2068,6 +2104,9 @@ function setupActivityForm() {
   activityForm.workoutPlan.addEventListener("change", () => {
     activeWorkout = activityForm.workoutPlan.value || "A";
     updateWorkoutCard();
+    renderGymExercises();
+  });
+  activityForm.activityDate.addEventListener("change", () => {
     renderGymExercises();
   });
   workoutToggle.addEventListener("click", () => {
@@ -2085,27 +2124,27 @@ function setupActivityForm() {
     event.preventDefault();
 
     const data = loadData();
-    const todayData = getTodayData(data);
-    const targetDayKey = editingEntry?.dayKey || getTodayKey();
-    const targetDay = editingEntry ? data.days[targetDayKey] : todayData;
-
-    if (!targetDay) {
-      resetActivityForm();
-      return;
-    }
-
+    const formDayKey = getActivityFormDateKey();
+    const sourceDayKey = editingEntry?.dayKey || formDayKey;
+    const sourceDay = getDayData(data, sourceDayKey);
+    const targetDay = getDayData(data, formDayKey);
     const entries = ensureDayEntries(targetDay);
-    const existingEntry = editingEntry ? getEntryById(targetDay, editingEntry.entryId) : null;
+    const existingEntry = editingEntry ? getEntryById(sourceDay, editingEntry.entryId) : null;
     const isGym = activityForm.activityType.value === "gym";
     const entry = createEntryFromActivityForm(existingEntry || {});
 
     if (editingEntry && existingEntry) {
-      const entryIndex = entries.findIndex((item) => item.id === editingEntry.entryId);
+      if (sourceDayKey !== formDayKey) {
+        sourceDay.entries = ensureDayEntries(sourceDay).filter((item) => item.id !== editingEntry.entryId);
+        entries.push(entry);
+      } else {
+        const entryIndex = entries.findIndex((item) => item.id === editingEntry.entryId);
 
-      entries[entryIndex] = entry;
+        entries[entryIndex] = entry;
+      }
     } else {
       if (isGym) {
-        const draftEntry = findLatestGymEntry(todayData, entry.workout);
+        const draftEntry = findLatestGymEntry(targetDay, entry.workout);
 
         if (
           draftEntry &&
@@ -2168,8 +2207,8 @@ function saveCompletedExercises(dayData, workout, completedExercises) {
 
 function toggleExerciseCompletion(workout, exercise) {
   const data = loadData();
-  const todayData = getTodayData(data);
-  const completedExercises = getCompletedExercises(todayData, workout);
+  const selectedDay = getDayData(data, getActivityFormDateKey());
+  const completedExercises = getCompletedExercises(selectedDay, workout);
   const completionKey = getExerciseCompletionKey(exercise);
 
   if (completedExercises.has(completionKey)) {
@@ -2178,7 +2217,7 @@ function toggleExerciseCompletion(workout, exercise) {
     completedExercises.add(completionKey);
   }
 
-  saveCompletedExercises(todayData, workout, completedExercises);
+  saveCompletedExercises(selectedDay, workout, completedExercises);
   saveData(data);
   renderGymExercises();
   renderActivities();
@@ -2251,8 +2290,8 @@ function renderGymExerciseList(container, exercises, workout) {
   }
 
   const data = loadData();
-  const todayData = getTodayData(data);
-  const completedExercises = getCompletedExercises(todayData, workout);
+  const selectedDay = getDayData(data, getActivityFormDateKey());
+  const completedExercises = getCompletedExercises(selectedDay, workout);
 
   container.innerHTML = "";
 
@@ -2492,7 +2531,7 @@ function renderGymExercises() {
     ...exercise,
     index,
   }));
-  const completedExercises = getCompletedExercises(getTodayData(data), activeWorkout);
+  const completedExercises = getCompletedExercises(getDayDataForRead(data, getActivityFormDateKey()), activeWorkout);
 
   saveData(data);
   renderWorkoutSelector(templates);

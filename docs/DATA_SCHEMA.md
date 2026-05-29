@@ -82,6 +82,7 @@ ltracker.data
 - A importacao substitui o conteudo local somente apos confirmacao do usuario.
 - A data do dia deve ser a chave principal de consulta diaria.
 - Cada dia fica salvo dentro de `days` usando o formato `YYYY-MM-DD`.
+- O campo Data do formulario define qual chave `days[YYYY-MM-DD]` recebera a nova entrada.
 - `entries` guarda os registros do dia em ordem de criacao e permite multiplos itens no mesmo dia.
 - Cada entrada usa `id`, `type`, `duration`, `distance`, `intensity` e `notes`.
 - Tipos atuais de `entries[].type`: `gym`, `walk`, `run`, `bike`, `rest`, `sick` e `other`.
