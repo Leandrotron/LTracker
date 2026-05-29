@@ -6,12 +6,12 @@
 - Organizar a experiencia em abas simples: Ficha, Historico e Perfil.
 - Separar ambiente do aluno (`index.html`) e Admin local (`admin.html`).
 - Criar biblioteca local de programas no Admin e aplicar copias independentes na ficha do aluno.
-- Priorizar aluno atual, ficha A/B, exercicios em ordem, fotos, observacoes e acao de marcar treino feito.
+- Priorizar aluno atual, ficha A/B/C, exercicios em ordem, fotos, observacoes e acao de marcar treino feito.
 - Transformar exercicios da ficha em itens de execucao com conclusao individual e progresso simples.
 - Transformar Historico em linha do tempo de acompanhamento do aluno, sem metricas pessoais antigas.
-- Manter status simples: treino feito, descanso, recuperacao, doente e observacao.
-- Esconder da experiencia inicial os elementos pessoais do LTracker original, como sono, peso, corrida, bike e dashboard amplo.
-- Preparar espaco visual para futura ficha A/B/C sem implementar sistema complexo nesta etapa.
+- Manter registro simples do dia com multiplas entradas: treino, caminhada, corrida, bike, descanso, doente, outro e observacao.
+- Esconder da experiencia inicial os elementos pessoais do LTracker original, como sono, peso e dashboard amplo.
+- Permitir cardio simples como registro complementar do dia, sem transformar a experiencia em painel de metricas.
 - Continuar sem backend, Supabase ou gestao completa de academia no MVP.
 
 ## Milestone 1: Base visual
@@ -30,9 +30,10 @@
 ## Milestone 3: Atividades
 
 - Cadastro rapido de atividade.
-- Lista de atividades do dia.
-- Tipos iniciais: Corrida, Bike e Academia.
-- Remocao simples de atividade.
+- Historico em timeline para todas as entradas do dia.
+- Tipos atuais: Treino, Caminhada, Corrida, Bike, Descanso, Doente e Outro.
+- Campos simples para cardio: duracao, distancia opcional, intensidade opcional e observacao.
+- Edicao e remocao simples de registros incorretos.
 
 ## Milestone 4: Resumo semanal
 

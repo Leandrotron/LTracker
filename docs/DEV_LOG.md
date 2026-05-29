@@ -1,5 +1,21 @@
 # DEV_LOG
 
+## 2026-05-29
+
+- Registro diario evoluido para `entries`, permitindo multiplos registros no mesmo dia.
+- O formulario principal agora adiciona novas entradas sem sobrescrever caminhada, corrida, bike, treino, descanso, doente ou outro ja salvos no dia.
+- Historico passa a exibir todas as entradas de cada dia em timeline, com acoes simples de editar e remover.
+- Edicao de entrada reaproveita o formulario da aba Ficha, com salvar alteracoes e cancelar.
+- Conclusao de exercicios passa a ser salva em `completedExercises` dentro da entrada `gym` correspondente.
+- Adicionada migracao local basica de `activities`, `dayStatus`, `statusNote`, `workoutPlan` e `completedExercises` antigos para o modelo novo.
+- Reintroduzido o registro manual de atividades nao-academia na aba Ficha sem voltar ao dashboard antigo.
+- O card "Registro do dia" passa a aceitar Treino, Caminhada, Corrida, Bike, Descanso, Doente e Outro.
+- Caminhada, Corrida e Bike exibem duracao, distancia opcional, intensidade opcional e observacao opcional.
+- Descanso e Doente salvam o status do dia com observacao opcional e atualizam imediatamente a linha do tempo.
+- Treinos continuam usando a ficha atual, o seletor A/B/C e a conclusao individual de exercicios.
+- Historico continua em formato de timeline e passa a listar treinos, cardio, descanso/doente, outro e observacoes.
+- Removido da aba Ficha o card duplicado de status rapido para manter a experiencia minimalista e mobile-first.
+
 ## 2026-05-25
 
 - Corrigida a adicao de multiplos exercicios em treinos internos de programas no Admin.

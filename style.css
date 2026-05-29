@@ -265,6 +265,13 @@ button:hover {
   margin-top: 14px;
 }
 
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.form-actions button,
 .backup-actions button {
   min-width: 136px;
 }
@@ -685,6 +692,22 @@ button:hover {
   color: var(--muted);
   font-size: 0.88rem;
   line-height: 1.45;
+}
+
+.timeline-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.timeline-action {
+  min-height: 34px;
+  padding: 7px 10px;
+  border: 1px solid rgba(244, 246, 248, 0.16);
+  background: rgba(244, 246, 248, 0.06);
+  color: var(--muted);
+  font-size: 0.78rem;
 }
 
 .student-form,

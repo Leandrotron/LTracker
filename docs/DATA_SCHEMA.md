@@ -14,35 +14,25 @@ ltracker.data
 {
   "days": {
     "2026-05-20": {
-      "dayStatus": "active",
-      "statusNote": "",
-      "weight": "61.32",
-      "sleepHours": "7.03",
-      "sleepQuality": "",
-      "mood": "",
-      "soreness": "",
-      "notes": "",
-      "activities": [
+      "entries": [
         {
-          "type": "Corrida",
-          "duration": "32.5",
-          "intensity": "",
-          "distance": "3.25",
-          "notes": ""
-        },
-        {
-          "type": "Caminhada",
-          "duration": "30",
-          "intensity": "",
-          "distance": "0.8",
-          "notes": ""
-        },
-        {
-          "type": "Academia",
+          "id": "entry-1779282000000-a1b2c3",
+          "type": "gym",
+          "workout": "A",
           "duration": "45",
+          "distance": "",
           "intensity": "",
-          "workoutPlan": "A",
-          "workoutFeeling": "",
+          "notes": "",
+          "completedExercises": [
+            "0-Supino inclinado"
+          ]
+        },
+        {
+          "id": "entry-1779285600000-d4e5f6",
+          "type": "walk",
+          "duration": "30",
+          "distance": "0.8",
+          "intensity": "",
           "notes": ""
         }
       ]
@@ -92,17 +82,16 @@ ltracker.data
 - A importacao substitui o conteudo local somente apos confirmacao do usuario.
 - A data do dia deve ser a chave principal de consulta diaria.
 - Cada dia fica salvo dentro de `days` usando o formato `YYYY-MM-DD`.
-- `weight` guarda texto numerico normalizado com ponto decimal quando informado. Exemplo: `61,32` vira `61.32`.
-- `sleepHours` continua sendo o campo principal de sono e guarda horas em decimal normalizado. Exemplo: `7:02` vira aproximadamente `7.03`.
-- Entradas antigas com virgula decimal ou sono no formato `h:min` ainda sao lidas pelo resumo semanal quando possivel.
-- Escalas simples de 1 a 5 sao usadas para qualidade do sono, disposicao, intensidade percebida e sensacao do treino.
-- `dayStatus` guarda o status neutro do dia: `active`, `planned_rest`, `recovery` ou `sick`.
-- `statusNote` guarda uma nota opcional sobre o status do dia.
-- `activities` guarda as atividades registradas no dia atual.
-- `completedExercises` guarda, por dia e por treino, os exercicios marcados como concluidos na execucao local do treino.
+- `entries` guarda os registros do dia em ordem de criacao e permite multiplos itens no mesmo dia.
+- Cada entrada usa `id`, `type`, `duration`, `distance`, `intensity` e `notes`.
+- Tipos atuais de `entries[].type`: `gym`, `walk`, `run`, `bike`, `rest`, `sick` e `other`.
+- `gym` usa `workout` A/B/C e `completedExercises` dentro da propria entrada.
+- `completedExercises` guarda as chaves dos exercicios marcados como concluidos naquele registro de treino.
 - `duration` guarda minutos em decimal normalizado quando informado. Exemplo: `32:30` vira `32.5`.
-- Corrida, Bike e Caminhada usam `distance`, tambem normalizado com ponto decimal quando informado.
-- Academia usa `workoutPlan` e `workoutFeeling`.
+- `walk`, `run` e `bike` usam `distance`, tambem normalizado com ponto decimal quando informado.
+- `walk`, `run` e `bike` podem usar `intensity` em escala simples de 1 a 5.
+- `rest`, `sick` e `other` normalmente usam apenas `notes`.
+- Campos antigos como `activities`, `dayStatus`, `statusNote`, `workoutPlan`, `workoutFeeling`, `status` ou `completedExercises` direto no dia sao migrados/renderizados para `entries` sem quebrar backups antigos.
 - `workoutTemplates` guarda a estrutura local de treinos A/B/C usada pela ficha.
 - `gym.students` guarda a lista local inicial de alunos cadastrados no Admin da branch `gym-edition`.
 - Cada aluno usa `id`, `name`, `startDate`, `note`, `createdAt` e pode ter `workoutTemplates`.
@@ -123,6 +112,5 @@ ltracker.data
 - Quando `workoutTemplates` ainda nao existir, o app usa os programas/treinos padrao atuais.
 - Se houver dados antigos em `gym.exercises`, o app tenta migrar os nomes e a ordem para `workoutTemplates`.
 - O modo editar ficha permite adicionar, remover, reorganizar e editar detalhes opcionais dos exercicios.
-- O resumo semanal usa apenas os dados ja existentes em `days`.
-- Dias sem `dayStatus` salvo sao lidos como `active` para manter compatibilidade com dados antigos.
+- O historico usa `entries` como fonte principal e ainda aceita formatos antigos durante a migracao local.
 - O schema pode mudar conforme o MVP evoluir.

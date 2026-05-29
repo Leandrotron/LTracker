@@ -54,14 +54,25 @@
           <article class="card">
             <div class="card-header">
               <p class="card-kicker">Hoje</p>
-              <h2>Execucao do treino</h2>
+              <h2>Registro do dia</h2>
             </div>
-            <p class="section-title">Treino selecionado</p>
+            <p class="section-title">Atividade ou status</p>
             <form class="activity-form" id="activity-form">
               <div class="form-grid">
-                <input id="activityType" name="activityType" type="hidden" value="Academia" />
-
                 <label>
+                  Tipo
+                  <select id="activityType" name="activityType">
+                    <option value="gym">Treino</option>
+                    <option value="walk">Caminhada</option>
+                    <option value="run">Corrida</option>
+                    <option value="bike">Bike</option>
+                    <option value="rest">Descanso</option>
+                    <option value="sick">Doente</option>
+                    <option value="other">Outro</option>
+                  </select>
+                </label>
+
+                <label class="gym-field">
                   Treino
                   <select id="workoutPlan" name="workoutPlan">
                     <option value="A">A</option>
@@ -69,12 +80,12 @@
                   </select>
                 </label>
 
-                <label>
+                <label class="duration-field">
                   Duracao
                   <input id="activityDuration" name="activityDuration" type="text" inputmode="decimal" placeholder="min opcional" />
                 </label>
 
-                <label class="is-hidden">
+                <label class="intensity-field is-hidden">
                   Intensidade
                   <select id="activityIntensity" name="activityIntensity">
                     <option value="">1-5</option>
@@ -106,10 +117,13 @@
 
               <label>
                 Observacoes
-                <textarea id="activityNotes" name="activityNotes" rows="3" placeholder="Ex: aumentou carga, sentiu desconforto, fez adaptacao"></textarea>
+                <textarea id="activityNotes" name="activityNotes" rows="3" placeholder="Ex: caminhada leve, descanso, gripe, adaptacao no treino"></textarea>
               </label>
 
-              <button type="submit">Marcar treino feito</button>
+              <div class="form-actions">
+                <button id="activity-submit" type="submit">Salvar registro</button>
+                <button class="secondary-button is-hidden" id="activity-cancel" type="button">Cancelar</button>
+              </div>
             </form>
 
             <button class="workout-toggle" id="workout-toggle" type="button">
@@ -117,43 +131,6 @@
             </button>
           </article>
 
-          <article class="card status-card">
-            <div class="card-header">
-              <p class="card-kicker">Registro do dia</p>
-              <h2>Status rapido</h2>
-            </div>
-            <form class="daily-form" id="daily-form">
-              <div class="form-grid">
-                <label>
-                  Status do dia
-                  <select id="dayStatus" name="dayStatus">
-                    <option value="active">Treino feito</option>
-                    <option value="planned_rest">Descanso</option>
-                    <option value="recovery">Recuperacao</option>
-                    <option value="sick">Doente</option>
-                  </select>
-                </label>
-
-                <label>
-                  Observacao
-                  <input id="statusNote" name="statusNote" type="text" placeholder="Ex: descanso, gripe, dor no joelho" />
-                </label>
-
-                <input id="weight" name="weight" type="hidden" />
-                <input id="sleepHours" name="sleepHours" type="hidden" />
-                <input id="sleepQuality" name="sleepQuality" type="hidden" />
-                <input id="mood" name="mood" type="hidden" />
-                <input id="soreness" name="soreness" type="hidden" />
-              </div>
-
-              <label>
-                Observacoes do aluno
-                <textarea id="notes" name="notes" rows="3" placeholder="Observacao geral do dia"></textarea>
-              </label>
-
-              <button type="submit">Salvar status</button>
-            </form>
-          </article>
         </div>
       </section>
 
