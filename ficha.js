@@ -53,7 +53,13 @@ function readData() {
   }
 }
 function getSessions(data = readData()) {
-  if (!Array.isArray(data.workoutLog)) data.workoutLog = [];
+  if (!Array.isArray(data.workoutLog)) {
+    data.workoutLog = [
+      { id: "start-a-2026-11-09", date: "2026-11-09", type: "A", createdAt: new Date(2026, 10, 9).getTime() },
+      { id: "start-b-2026-11-10", date: "2026-11-10", type: "B", createdAt: new Date(2026, 10, 10).getTime() },
+    ];
+    writeData(data);
+  }
   return data.workoutLog;
 }
 function writeData(data) {
