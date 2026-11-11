@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#111318" />
+    <title>Ficha ABC — LTracker</title>
+    <link rel="stylesheet" href="ficha.css" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar">
+        <a class="back-link" href="index.html">← LTracker</a>
+        <p class="eyebrow">Ficha atual</p>
+        <h1>Treino ABC</h1>
+        <p class="subtitle">Marque o treino feito e acompanhe as 40 sessões.</p>
+      </header>
+
+      <section class="progress-card" aria-label="Progresso da ficha">
+        <div class="progress-copy">
+          <span class="eyebrow">Progresso</span>
+          <strong id="progress-count">0 <small>/ 40</small></strong>
+          <span id="progress-message">40 sessões para concluir a ficha</span>
+        </div>
+        <div class="progress-ring" id="progress-ring" role="img" aria-label="0 de 40 treinos">
+          <span id="progress-percent">0%</span>
+        </div>
+      </section>
+
+      <section class="card log-card">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Registro</p>
+            <h2>Qual treino você fez?</h2>
+          </div>
+          <label class="date-field">Data
+            <input id="workout-date" type="date" />
+          </label>
+        </div>
+        <div class="log-buttons" aria-label="Marcar treino realizado">
+          <button class="workout-button workout-a" data-workout="A" type="button"><span>A</span> Marcar treino A</button>
+          <button class="workout-button workout-b" data-workout="B" type="button"><span>B</span> Marcar treino B</button>
+          <button class="workout-button workout-c" data-workout="C" type="button"><span>C</span> Marcar treino C</button>
+        </div>
+        <p class="feedback" id="feedback" role="status" aria-live="polite"></p>
+      </section>
+
+      <section class="card routine-card">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Sua ficha</p>
+            <h2>Exercícios</h2>
+          </div>
+          <span class="rest-note">Descanso: 60s</span>
+        </div>
+        <div class="tabs" role="tablist" aria-label="Selecionar treino">
+          <button class="tab is-active" role="tab" aria-selected="true" data-tab="A" type="button">Treino A</button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="B" type="button">Treino B</button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="C" type="button">Treino C</button>
+        </div>
+        <div id="exercise-list" class="exercise-list"></div>
+      </section>
+
+      <section class="card calendar-card">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Histórico</p>
+            <h2>Treinos registrados</h2>
+          </div>
+          <div class="month-nav">
+            <button id="prev-month" class="icon-button" type="button" aria-label="Mês anterior">‹</button>
+            <strong id="month-label"></strong>
+            <button id="next-month" class="icon-button" type="button" aria-label="Próximo mês">›</button>
+          </div>
+        </div>
+        <div class="calendar" id="calendar" aria-label="Calendário de treinos"></div>
+        <div class="legend"><span class="legend-dot"></span> Dia com treino registrado</div>
+        <div id="history" class="history"></div>
+      </section>
+      <footer>Os registros ficam salvos neste navegador do iPhone.</footer>
+    </main>
+    <script src="ficha.js"></script>
+  </body>
+</html>
